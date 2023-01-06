@@ -12,11 +12,23 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sprintSpeed = 8f;
     [SerializeField] GameObject graphics;
 
+
+    [SerializeField] AnimationCurve jumpCurve;
+    Transform graphicsTransform;
+    [SerializeField] float jumpHeight = 3f;
+    [SerializeField] float jumpDuration = 3f;
+    float jumpTimer;
+
+
     float speed;
 
     Vector2 dirInput;
 
+
+
     bool sprintInput;
+    bool attack1Input;
+    bool jumpInput;
 
     [HideInInspector]
     public bool right;
@@ -25,7 +37,12 @@ public class PlayerMovement : MonoBehaviour
     {
         IDLE,
         WALK,
-        RUN
+        RUN,
+        ATTACK1,
+        JUMPUP,
+        JUMPMAX,
+        JUMPDOWN,
+        JUMPLAND
     }
 
 
@@ -33,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         currentState = PlayerState.IDLE;
+        graphicsTransform = graphics.transform;
     }
 
     // Update is called once per frame
@@ -41,6 +59,14 @@ public class PlayerMovement : MonoBehaviour
         GetInputs();
 
         OnStateUpdate();
+
+        
+
+        //if (jumpInput)
+        //{
+        //    Jump();
+
+        //}
     }
 
     void OnStateEnter()
@@ -52,9 +78,24 @@ public class PlayerMovement : MonoBehaviour
                 rb2d.velocity = Vector2.zero;
                 break;
             case PlayerState.WALK:
-               
+
                 break;
             case PlayerState.RUN:
+                break;
+            case PlayerState.ATTACK1:
+                animator.SetTrigger("ATTACK1");
+                break;
+            case PlayerState.JUMPUP:
+                animator.SetTrigger("JUMP");
+
+
+
+                break;
+            case PlayerState.JUMPMAX:
+                break;
+            case PlayerState.JUMPDOWN:
+                break;
+            case PlayerState.JUMPLAND:
                 break;
             default:
                 break;
@@ -67,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerState.IDLE:
 
-                if(dirInput != Vector2.zero && !sprintInput)
+                if (dirInput != Vector2.zero && !sprintInput)
                 {
                     TransitionToState(PlayerState.WALK);
                 }
@@ -75,6 +116,16 @@ public class PlayerMovement : MonoBehaviour
                 if (dirInput != Vector2.zero && sprintInput)
                 {
                     TransitionToState(PlayerState.RUN);
+                }
+
+                if (attack1Input)
+                {
+                    TransitionToState(PlayerState.ATTACK1);
+                }
+
+                if (jumpInput)
+                {
+                    TransitionToState(PlayerState.JUMPUP);
                 }
 
                 break;
@@ -92,22 +143,90 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.IDLE);
                 }
 
+                if (attack1Input)
+                {
+                    TransitionToState(PlayerState.ATTACK1);
+                }
+
+                if (jumpInput)
+                {
+                    TransitionToState(PlayerState.JUMPUP);
+                }
+
+
                 break;
             case PlayerState.RUN:
 
                 speed = sprintSpeed;
 
-                if(!sprintInput)
+                if (!sprintInput)
                 {
                     TransitionToState(PlayerState.WALK);
                 }
 
-                if(dirInput == Vector2.zero)
+                if (dirInput == Vector2.zero)
                 {
                     TransitionToState(PlayerState.IDLE);
                 }
 
                 break;
+
+            case PlayerState.ATTACK1:
+
+                if (dirInput != Vector2.zero)
+                {
+                    TransitionToState(PlayerState.WALK);
+                }
+
+                if (dirInput == Vector2.zero)
+                {
+                    TransitionToState(PlayerState.IDLE);
+                }
+
+
+                break;
+
+            case PlayerState.JUMPUP:
+
+                if (jumpTimer < jumpDuration)
+                {
+                    jumpTimer += Time.deltaTime;
+
+                    float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
+
+                    graphicsTransform.localPosition = new Vector3(transform.localPosition.x, y * jumpHeight, transform.localPosition.z);
+                }
+                else
+                {
+                    jumpTimer = 0f;
+                }
+
+                TransitionToState(PlayerState.JUMPMAX);
+
+                break;
+            case PlayerState.JUMPMAX:
+
+                TransitionToState(PlayerState.JUMPDOWN);
+
+                break;
+            case PlayerState.JUMPDOWN:
+
+                TransitionToState(PlayerState.JUMPLAND);
+
+                break;
+            case PlayerState.JUMPLAND:
+
+                if (dirInput != Vector2.zero)
+                {
+                    TransitionToState(PlayerState.WALK);
+                }
+
+                if (dirInput == Vector2.zero)
+                {
+                    TransitionToState(PlayerState.IDLE);
+                }
+                break;
+
             default:
                 break;
         }
@@ -122,6 +241,16 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.WALK:
                 break;
             case PlayerState.RUN:
+                break;
+            case PlayerState.ATTACK1:
+                break;
+            case PlayerState.JUMPUP:
+                break;
+            case PlayerState.JUMPMAX:
+                break;
+            case PlayerState.JUMPDOWN:
+                break;
+            case PlayerState.JUMPLAND:
                 break;
             default:
                 break;
@@ -154,10 +283,19 @@ public class PlayerMovement : MonoBehaviour
         sprintInput = Input.GetButton("Sprint");
         animator.SetBool("SPRINT", sprintInput);
 
+        attack1Input = Input.GetButtonDown("Attack1");
+
+        jumpInput = Input.GetButtonDown("Jump");
+
     }
 
     private void FixedUpdate()
     {
         rb2d.velocity = dirInput.normalized * speed;
+    }
+
+    void Jump()
+    {
+    
     }
 }
