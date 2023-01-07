@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
 
 
     [SerializeField] AnimationCurve jumpCurve;
-    Transform graphicsTransform;
     [SerializeField] float jumpHeight = 3f;
     [SerializeField] float jumpDuration = 3f;
     float jumpTimer;
@@ -29,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     bool sprintInput;
     bool attack1Input;
     bool jumpInput;
+    [SerializeField] bool isJumping;
 
     [HideInInspector]
     public bool right;
@@ -46,11 +46,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+
     // Start is called before the first frame update
     void Start()
     {
         currentState = PlayerState.IDLE;
-        graphicsTransform = graphics.transform;
+
     }
 
     // Update is called once per frame
@@ -60,13 +61,28 @@ public class PlayerMovement : MonoBehaviour
 
         OnStateUpdate();
 
-        
+        Jump();
 
-        //if (jumpInput)
-        //{
-        //    Jump();
+        if(jumpTimer <= 0f)
+        {
+            isJumping = false;
+        }
 
-        //}
+    }
+
+    private void Jump()
+    {
+        if (jumpTimer < jumpDuration && isJumping)
+        {
+            jumpTimer += Time.deltaTime;
+
+            float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
+
+            Debug.Log(y);
+
+            graphics.transform.localPosition = new Vector3(graphics.transform.localPosition.x, y * jumpHeight, graphics.transform.localPosition.z);
+        }
+
     }
 
     void OnStateEnter()
@@ -76,9 +92,10 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.IDLE:
                 animator.SetBool("WALK", false);
                 rb2d.velocity = Vector2.zero;
+                
                 break;
             case PlayerState.WALK:
-
+                
                 break;
             case PlayerState.RUN:
                 break;
@@ -86,9 +103,9 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetTrigger("ATTACK1");
                 break;
             case PlayerState.JUMPUP:
+
+                isJumping = true;
                 animator.SetTrigger("JUMP");
-
-
 
                 break;
             case PlayerState.JUMPMAX:
@@ -108,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerState.IDLE:
 
+                
                 if (dirInput != Vector2.zero && !sprintInput)
                 {
                     TransitionToState(PlayerState.WALK);
@@ -130,7 +148,7 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.WALK:
-
+                
                 speed = walkSpeed;
 
                 if (sprintInput)
@@ -156,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.RUN:
-
+                
                 speed = sprintSpeed;
 
                 if (!sprintInput)
@@ -188,19 +206,6 @@ public class PlayerMovement : MonoBehaviour
 
             case PlayerState.JUMPUP:
 
-                if (jumpTimer < jumpDuration)
-                {
-                    jumpTimer += Time.deltaTime;
-
-                    float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
-
-                    graphicsTransform.localPosition = new Vector3(transform.localPosition.x, y * jumpHeight, transform.localPosition.z);
-                }
-                else
-                {
-                    jumpTimer = 0f;
-                }
-
                 TransitionToState(PlayerState.JUMPMAX);
 
                 break;
@@ -218,13 +223,16 @@ public class PlayerMovement : MonoBehaviour
 
                 if (dirInput != Vector2.zero)
                 {
+                    jumpTimer = 0f;
                     TransitionToState(PlayerState.WALK);
                 }
 
                 if (dirInput == Vector2.zero)
                 {
+                    jumpTimer = 0f;
                     TransitionToState(PlayerState.IDLE);
                 }
+
                 break;
 
             default:
@@ -285,7 +293,9 @@ public class PlayerMovement : MonoBehaviour
 
         attack1Input = Input.GetButtonDown("Attack1");
 
+
         jumpInput = Input.GetButtonDown("Jump");
+        
 
     }
 
@@ -294,8 +304,4 @@ public class PlayerMovement : MonoBehaviour
         rb2d.velocity = dirInput.normalized * speed;
     }
 
-    void Jump()
-    {
-    
-    }
 }
