@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    [SerializeField] RuntimeAnimatorController standardController;
+    [SerializeField] RuntimeAnimatorController holdCanController;
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] Animator animator;
     [SerializeField] PlayerState currentState;
@@ -67,6 +68,20 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = false;
         }
+
+        // -------------------- Phase de test changement d'Animator Controller ----------------//
+        if(Input.GetKeyDown("p")) // à mettre quand on attrape une canette/objet à lancer
+        {
+            animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+        }
+
+        if(Input.GetKeyDown("m")) // à mettre lorsque l'on jette l'objet. Sur la sortie de l'état ATTACK1 ?
+        {
+            animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
+        }
+        // -------------------- Phase de test changement d'Animator Controller ----------------//
+
+
 
     }
 
