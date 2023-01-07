@@ -75,10 +75,11 @@ public class PlayerMovement : MonoBehaviour
             animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
         }
 
-        if(Input.GetKeyDown("m")) // à mettre lorsque l'on jette l'objet. Sur la sortie de l'état ATTACK1 ?
-        {
-            animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
-        }
+        //if(Input.GetKeyDown("m")) // à mettre lorsque l'on jette l'objet. Sur la sortie de l'état ATTACK1 ?
+        //{
+        //    animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
+        //}
+
         // -------------------- Phase de test changement d'Animator Controller ----------------//
 
 
@@ -319,4 +320,13 @@ public class PlayerMovement : MonoBehaviour
         rb2d.velocity = dirInput.normalized * speed;
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "PICKUP" && Input.GetButtonDown("PickUp"))
+        {
+            animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
+            collision.transform.SetParent(graphics.transform);
+            collision.transform.position = new Vector3(graphics.transform.position.x, graphics.transform.position.y + 1.2f, graphics.transform.position.z);
+        }
+    }
 }
