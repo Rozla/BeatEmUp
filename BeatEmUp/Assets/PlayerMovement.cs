@@ -30,9 +30,12 @@ public class PlayerMovement : MonoBehaviour
     bool attack1Input;
     bool jumpInput;
     [SerializeField] bool isJumping;
+    bool isHolding;
+
 
     [HideInInspector]
     public bool right;
+    
 
     public enum PlayerState
     {
@@ -217,7 +220,6 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.IDLE);
                 }
 
-
                 break;
 
             case PlayerState.JUMPUP:
@@ -327,6 +329,7 @@ public class PlayerMovement : MonoBehaviour
             animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
             collision.transform.SetParent(graphics.transform);
             collision.transform.position = new Vector3(graphics.transform.position.x, graphics.transform.position.y + 1.2f, graphics.transform.position.z);
+            collision.gameObject.GetComponent<CanBehavior>().isHolded = true;
         }
     }
 }
