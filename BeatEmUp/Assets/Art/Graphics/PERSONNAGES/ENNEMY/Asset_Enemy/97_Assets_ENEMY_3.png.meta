@@ -1513,9 +1513,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      97_Assets_ENEMY_3_22: -1804340476
       97_Assets_ENEMY_3_43: -981403918
-      97_Assets_ENEMY_3_58: -2067310062
-      97_Assets_ENEMY_3_17: 1208001766
+      97_Assets_ENEMY_3_18: -951952289
       97_Assets_ENEMY_3_62: 1810710004
       97_Assets_ENEMY_3_27: 316878794
       97_Assets_ENEMY_3_3: -1645549720
@@ -1572,13 +1572,13 @@ TextureImporter:
       97_Assets_ENEMY_3_20: 309239573
       97_Assets_ENEMY_3_25: -1462962726
       97_Assets_ENEMY_3_14: -1546397489
-      97_Assets_ENEMY_3_23: -222641661
-      97_Assets_ENEMY_3_18: -951952289
-      97_Assets_ENEMY_3_22: -1804340476
       97_Assets_ENEMY_3_40: -207592979
+      97_Assets_ENEMY_3_23: -222641661
+      97_Assets_ENEMY_3_58: -2067310062
       97_Assets_ENEMY_3_55: -791576116
-      97_Assets_ENEMY_3_37: 857972909
+      97_Assets_ENEMY_3_17: 1208001766
       97_Assets_ENEMY_3_0: -1196052317
+      97_Assets_ENEMY_3_37: 857972909
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
