@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:BeatEmUp/Assets/Art/Graphics/PERSONNAGES/ENNEMY/ANIM_ENEMY01/Animator Enemy01.controller.meta
+guid: 6cde4b80d7cb87b49a4406796761fa14
+========
 guid: 5730e931222489d4fbd957ee09e22385
+>>>>>>>> 416e2d9062bd8b8063f144032fbef320dc9166f2:BeatEmUp/Assets/Art/Graphics/PERSONNAGES/HERO/Anim_Player_Death.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000
