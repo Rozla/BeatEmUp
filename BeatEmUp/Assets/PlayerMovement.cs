@@ -329,6 +329,7 @@ public class PlayerMovement : MonoBehaviour
             animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
             collision.transform.SetParent(graphics.transform);
             collision.transform.position = new Vector3(graphics.transform.position.x, graphics.transform.position.y + 1.2f, graphics.transform.position.z);
+            collision.GetComponent<CanBehavior>().isHolded = true;
         }
     }
 }
