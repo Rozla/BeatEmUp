@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpDuration = 3f;
     float jumpTimer;
 
+    float attackDuration = .35f;
+    float attackTimer;
 
     float speed;
 
@@ -29,13 +31,15 @@ public class PlayerMovement : MonoBehaviour
     bool sprintInput;
     bool attack1Input;
     bool jumpInput;
-    [SerializeField] bool isJumping;
+
+    bool isJumping;
     bool isHolding;
+    bool isOnAttack;
 
 
     [HideInInspector]
     public bool right;
-    
+
 
     public enum PlayerState
     {
@@ -72,20 +76,6 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
         }
 
-        // -------------------- Phase de test changement d'Animator Controller ----------------//
-        if(Input.GetKeyDown("p")) // à mettre quand on attrape une canette/objet à lancer
-        {
-            animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
-        }
-
-        //if(Input.GetKeyDown("m")) // à mettre lorsque l'on jette l'objet. Sur la sortie de l'état ATTACK1 ?
-        //{
-        //    animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
-        //}
-
-        // -------------------- Phase de test changement d'Animator Controller ----------------//
-
-
 
     }
 
@@ -111,10 +101,20 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.IDLE:
                 animator.SetBool("WALK", false);
                 rb2d.velocity = Vector2.zero;
-                
+
+                if (!isHolding)
+                {
+                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                }
+
                 break;
             case PlayerState.WALK:
-                
+
+                if (!isHolding)
+                {
+                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                }
+
                 break;
             case PlayerState.RUN:
                 break;
@@ -210,14 +210,40 @@ public class PlayerMovement : MonoBehaviour
 
             case PlayerState.ATTACK1:
 
-                if (dirInput != Vector2.zero)
+                if (dirInput != Vector2.zero && !isHolding)
                 {
                     TransitionToState(PlayerState.WALK);
                 }
 
-                if (dirInput == Vector2.zero)
+                if (dirInput == Vector2.zero && !isHolding)
                 {
                     TransitionToState(PlayerState.IDLE);
+                }
+
+                if (isHolding && dirInput != Vector2.zero)
+                {
+                    attackTimer += Time.deltaTime;
+
+                    if (attackTimer > attackDuration)
+                    {
+                        animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                        isHolding = false;
+                        attackTimer = 0;
+                        TransitionToState(PlayerState.WALK);
+                    }
+                }
+
+                if (isHolding && dirInput == Vector2.zero)
+                {
+                    attackTimer += Time.deltaTime;
+
+                    if (attackTimer > attackDuration)
+                    {
+                        animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                        isHolding = false;
+                        attackTimer = 0;
+                        TransitionToState(PlayerState.WALK);
+                    }
                 }
 
                 break;
@@ -319,13 +345,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb2d.velocity = dirInput.normalized * speed;
+        if(attackTimer >= 0)
+        {
+            rb2d.velocity = dirInput.normalized * speed;
+
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "PICKUP" && Input.GetButtonDown("PickUp"))
         {
+            isHolding = true;
             animator.runtimeAnimatorController = holdCanController as RuntimeAnimatorController;
             collision.transform.SetParent(graphics.transform);
             collision.transform.position = new Vector3(graphics.transform.position.x, graphics.transform.position.y + 1.2f, graphics.transform.position.z);
