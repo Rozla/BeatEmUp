@@ -5,16 +5,27 @@ using UnityEngine;
 public class EnemyMovement: MonoBehaviour
 {
     [SerializeField] Animator animator;
-    [SerializeField] float walkSpeed = 5f;  
+    [SerializeField] float walkEnemySpeed = 5f;  
+
     [SerializeField] EnemyState currentState;
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
+    [SerializeField] float jumpEnemyDuration = 3f;
+    public Transform player;
+
+    [SerializeField] float stopDistance = 10f;
     public bool right;
+
     Vector2 enemyDir;
     public enum EnemyState
     {
         IDLE,
-        WALK
+        WALK,
+        JUMPUP,
+        JUMPMAX,
+        JUMPDOWN,
+        ATTACK01,
+        ATTACK02
         
         
     }
@@ -38,14 +49,21 @@ public class EnemyMovement: MonoBehaviour
         GetInputs();
         OnStateUpdate();
 
+        enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed * Time.deltaTime;
 
+        // Calcul de la distance entre l'ennemi et le joueur
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance == stopDistance)
+        {
+            return;
+        }
     }
+   
 
     private void GetInputs()
     {
-        // RECUPERER LES INPUTS 
-
-        enemyDir = new Vector2(Input.GetAxisRaw("HorizontalEnemy"), Input.GetAxisRaw("VerticalEnemy"));
+       
 
         // SEULEMENT SI J'APPUI SUR UNE DIRECTION
         if (enemyDir.magnitude != 0)
@@ -59,6 +77,7 @@ public class EnemyMovement: MonoBehaviour
             right = enemyDir.x > 0;
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
+        
     }
 
     void OnStateEnter()
@@ -88,16 +107,30 @@ public class EnemyMovement: MonoBehaviour
                 {
                     TransitionToState(EnemyState.WALK);
                 }
-              
+               
                 break;
             case EnemyState.WALK:
-                rb2d.velocity = enemyDir.normalized * walkSpeed;
+                rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
                
                 // TO IDLE
                 if (enemyDir == Vector2.zero)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
+                
+                break;
+            case EnemyState.JUMPUP:
+
+                TransitionToState(EnemyState.JUMPMAX);
+
+                break;
+            case EnemyState.JUMPMAX:
+                TransitionToState(EnemyState.JUMPDOWN);
+
+                break;
+            case EnemyState.JUMPDOWN:
+
+                
                 break;
             default:
                 break;
