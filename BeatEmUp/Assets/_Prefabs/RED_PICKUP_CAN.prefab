@@ -178,5 +178,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cd1e344b17324f45bbb84e05dc23dad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRight: 0
   isHolded: 0
-  isThrown: 0
