@@ -4,7 +4,7 @@ using System.Collections;
 public class EnemyMovement : MonoBehaviour
 {
 
-    public Sprite[] sprites;
+   
     [SerializeField] float speed;
     [SerializeField] float health;
     [SerializeField] int dropCount;
