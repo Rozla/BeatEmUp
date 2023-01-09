@@ -28,7 +28,11 @@ public class CanBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        //ON RECUPERE LE RIGIDBODY DE L'OBJET
         rb2d = GetComponent<Rigidbody2D>();
+
+        //ON RECUPERE LE COLLIDER2D DE L'OBJET
         bc2d = GetComponent<BoxCollider2D>();
         
     }
@@ -37,25 +41,36 @@ public class CanBehavior : MonoBehaviour
     void Update()
     {
 
+        //SI L'OBJET EST TENU ET QU'IL A UN PARENT
         if (isHolded && transform.parent != null)
         {
+
+            //SON ORIENTATION EST EGALE A CELLE DU PARENT
             isRight = transform.parent.rotation.y;
         }
 
+
+        //FONCTION POUR FIXER LA DIRECTION DU LANCER
         if(isRight == 1)
         {
+            //POUR ENVOYER A GAUCHE
             rotationFix = -1f;
         }
 
         if (isRight == 0)
         {
+            //POUR ENVOYER A DROITE
             rotationFix = 1f;
         }
 
+
+        //FONCTION POUR AJOUTER UNE FORCE QUAND ON JETE L'OBJET
         Throw();
 
+        //SI L'OBJET EST EN MOUVEMENT ET QU'IL PASSE SOUS LES PIEDS DU PLAYER AU MOMENT DU LANCER
         if (inMotion && transform.position.y < stopPosition.y)
         {
+            
             t = 0f;
             rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.velocity = Vector2.zero;
@@ -74,7 +89,7 @@ public class CanBehavior : MonoBehaviour
         if (isHolded && Input.GetButtonDown("Attack1"))
         {
             t = 0f;
-            stopPosition = new Vector2(transform.parent.position.x, transform.parent.position.y - .1f);
+            stopPosition = new Vector2(transform.parent.position.x, transform.parent.position.y);
 
             
             rb2d.bodyType = RigidbodyType2D.Dynamic;
