@@ -13,18 +13,17 @@ public class CanBehavior : MonoBehaviour
     float throwDistance = 5f;
 
     float t;
-
     float rotationFix;
+
+    bool inMotion;
 
     [SerializeField] float isRight;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isHolded;
 
 
-
-    float stopPosition;
-
+    Vector2 stopPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -38,7 +37,7 @@ public class CanBehavior : MonoBehaviour
     void Update()
     {
 
-        if(isHolded && transform.parent != null)
+        if (isHolded && transform.parent != null)
         {
             isRight = transform.parent.rotation.y;
         }
@@ -55,31 +54,34 @@ public class CanBehavior : MonoBehaviour
 
         Throw();
 
-        if(stopPosition >= transform.position.y)
+        if (inMotion && transform.position.y < stopPosition.y)
         {
+            t = 0f;
+            rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.velocity = Vector2.zero;
-            rb2d.mass = 0f;
+            //bc2d.isTrigger = false;
+            isHolded = false;
+
         }
+
     }
 
     private void Throw()
     {
+
+        t += Time.deltaTime;
+
         if (isHolded && Input.GetButtonDown("Attack1"))
         {
-            stopPosition = transform.parent.position.y;
+            t = 0f;
+            stopPosition = new Vector2(transform.parent.position.x, transform.parent.position.y - .1f);
 
-            t += Time.deltaTime;
+            
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             float throwForce = Mathf.Sqrt(-2 * Physics2D.gravity.y * throwHeight * rb2d.mass);
             rb2d.AddForce(new Vector2(throwDistance * rotationFix, throwForce), ForceMode2D.Impulse);
             transform.parent = null;
-            if (t >= .5f)
-            {
-                t = 0f;
-                rb2d.bodyType = RigidbodyType2D.Kinematic;
-                bc2d.isTrigger = false;
-                isHolded = false;
-            }
+            inMotion = true;
         }
     }
 }
