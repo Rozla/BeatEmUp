@@ -2,19 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement: MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] Animator animator;
-    [SerializeField] float walkEnemySpeed = 5f;  
+    [SerializeField] float walkEnemySpeed = 5f;
 
     [SerializeField] EnemyState currentState;
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
     [SerializeField] float jumpEnemyDuration = 3f;
+
+    
+
+
     public Transform player;
 
-    [SerializeField] float stopDistance = 10f;
     public bool right;
+
 
     Vector2 enemyDir;
     public enum EnemyState
@@ -22,16 +26,13 @@ public class EnemyMovement: MonoBehaviour
         IDLE,
         WALK,
         JUMPUP,
-        JUMPMAX,
-        JUMPDOWN,
         ATTACK01,
-        ATTACK02
-        
-        
+        DEAD
+
     }
 
-   
-   
+
+
 
 
     // Start is called before the first frame update
@@ -44,17 +45,7 @@ public class EnemyMovement: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
-       
         OnStateUpdate();
-
-        // SEULEMENT SI J'APPUI SUR UNE DIRECTION
-        if (enemyDir.magnitude != 0)
-        {
-            animator.SetBool("WALK_ENEMY01", true);
-
-        }
 
         if (enemyDir.x != 0)
         {
@@ -62,17 +53,11 @@ public class EnemyMovement: MonoBehaviour
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
 
-        enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed * Time.deltaTime;
+       
 
-        // Calcul de la distance entre l'ennemi et le joueur
-        float distance = Vector2.Distance(transform.position, player.position);
 
-        if (distance == stopDistance)
-        {
-            return;
-        }
     }
-   
+
 
     void OnStateEnter()
     {
@@ -81,12 +66,25 @@ public class EnemyMovement: MonoBehaviour
             case EnemyState.IDLE:
                 animator.SetBool("WALK_ENEMY01", false);
                 rb2d.velocity = Vector2.zero;
+
                 break;
             case EnemyState.WALK:
-                break;
+                if (enemyDir.magnitude != 0)
+                {
+                    animator.SetBool("WALK_ENEMY01", true);
+                }
 
-        
                
+
+                break;
+            case EnemyState.ATTACK01:
+                animator.SetBool("IsAttacking", true);
+                break;
+            case EnemyState.JUMPUP:
+
+                break;
+            case EnemyState.DEAD:
+
             default:
                 break;
         }
@@ -97,35 +95,41 @@ public class EnemyMovement: MonoBehaviour
         {
             case EnemyState.IDLE:
                 // TO WALK
-                if (enemyDir != Vector2.zero )
+                if (enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
-               
+                //SI LE PLAYER EST A PORTE DE L'ENEMY JE JOUE MON ANIMATION D'ATTAQUE
+
                 break;
             case EnemyState.WALK:
                 rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
-               
+
                 // TO IDLE
                 if (enemyDir == Vector2.zero)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
-                
+                //SI LE PLAYER EST A PORTE DE L'ENEMY JE JOUE MON ANIMATION D'ATTAQUE
+
+                break;
+            case EnemyState.ATTACK01:
+
+                if (enemyDir != Vector2.zero)
+                {
+                    TransitionToState(EnemyState.WALK);
+                }
+                if (enemyDir == Vector2.zero)
+                {
+                    TransitionToState(EnemyState.IDLE);
+                }
+
                 break;
             case EnemyState.JUMPUP:
-
-                TransitionToState(EnemyState.JUMPMAX);
-
                 break;
-            case EnemyState.JUMPMAX:
-                TransitionToState(EnemyState.JUMPDOWN);
 
-                break;
-            case EnemyState.JUMPDOWN:
+            case EnemyState.DEAD:
 
-                
-                break;
             default:
                 break;
         }
@@ -137,9 +141,22 @@ public class EnemyMovement: MonoBehaviour
             case EnemyState.IDLE:
                 break;
             case EnemyState.WALK:
+                if (enemyDir.magnitude != 0)
+                {
+                    animator.SetBool("WALK_ENEMY01", false);
+                }
                 break;
-           
-               
+            case EnemyState.ATTACK01:
+                animator.SetBool("IsAttacking", false);
+                break;
+
+            case EnemyState.DEAD:
+                break;
+            case EnemyState.JUMPUP:
+            default:
+                break;
+
+
         }
     }
     void TransitionToState(EnemyState nextState)
@@ -147,6 +164,30 @@ public class EnemyMovement: MonoBehaviour
         OnStateExit();
         currentState = nextState;
         OnStateEnter();
+    }
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
+
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            enemyDir = Vector2.zero;
+
+        }
+
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            ;
+        }
     }
 }
 
