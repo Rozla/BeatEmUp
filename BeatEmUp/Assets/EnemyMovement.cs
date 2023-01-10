@@ -46,8 +46,21 @@ public class EnemyMovement: MonoBehaviour
     {
         
 
-        GetInputs();
+       
         OnStateUpdate();
+
+        // SEULEMENT SI J'APPUI SUR UNE DIRECTION
+        if (enemyDir.magnitude != 0)
+        {
+            animator.SetBool("WALK_ENEMY01", true);
+
+        }
+
+        if (enemyDir.x != 0)
+        {
+            right = enemyDir.x > 0;
+            graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
+        }
 
         enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed * Time.deltaTime;
 
@@ -60,25 +73,6 @@ public class EnemyMovement: MonoBehaviour
         }
     }
    
-
-    private void GetInputs()
-    {
-       
-
-        // SEULEMENT SI J'APPUI SUR UNE DIRECTION
-        if (enemyDir.magnitude != 0)
-        {
-               animator.SetBool("WALK_ENEMY01",true);
-            
-        }
-
-        if (enemyDir.x != 0)
-        {
-            right = enemyDir.x > 0;
-            graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
-        }
-        
-    }
 
     void OnStateEnter()
     {

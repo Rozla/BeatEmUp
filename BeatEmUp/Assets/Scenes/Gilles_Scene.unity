@@ -192,13 +192,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1298601957}
-  walkEnemySpeed: 5
+  walkEnemySpeed: 2
   currentState: 0
   rb2d: {fileID: 614726117}
   graphics: {fileID: 1298601955}
   jumpEnemyDuration: 3
   player: {fileID: 1926929594}
-  stopDistance: 100
+  stopDistance: 1000
   right: 0
 --- !u!4 &614726119
 Transform:
@@ -640,6 +640,10 @@ PrefabInstance:
     - target: {fileID: 3122250675413081011, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_Name
       value: PLAYER
+      objectReference: {fileID: 0}
+    - target: {fileID: 3122250675413081012, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
