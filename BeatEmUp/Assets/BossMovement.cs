@@ -1,45 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class BOSS_MOVEMENT : MonoBehaviour
+public class BossMovement : MonoBehaviour
 {
     [SerializeField] GameObject Boss;
     [SerializeField] float bossSpeed = 5f;
     Vector2 bossDir;
     [SerializeField] Animator animator;
     [SerializeField] BossState currentState;
+    [SerializeField] GameObject player;
+
+    Vector2 distance;
+
+    Vector2 posPlayer;
+
+
+
 
     Rigidbody2D rb2d;
 
     public enum BossState
     {
         IDLE,
-        WALK
+        WALK,
+        ATTACK,
+        SLAM,
+        DEATH,
+        TAUNT
+
     }
-     
 
 
 
 
-    // Start is called before the first frame update
-     void Start()
+
+
+
+
+    void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        distance = new Vector2(1f, 1f);
     }
 
 
 
-    // Update is called once per frame
+
+
     void Update()
     {
+
 
         if (Boss != null)
         {
             transform.LookAt(Boss.transform.position);
         }
 
-        
+        OnStateUpdate();
+
+        posPlayer = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -52,7 +88,13 @@ public class BOSS_MOVEMENT : MonoBehaviour
                 break;
             case BossState.WALK:
                 break;
-            default:
+            case BossState.TAUNT:
+                break;
+            case BossState.ATTACK:
+                break;
+            case BossState.DEATH:
+                break;
+            case BossState.SLAM:
                 break;
         }
     }
@@ -62,12 +104,11 @@ public class BOSS_MOVEMENT : MonoBehaviour
         switch (currentState)
         {
             case BossState.IDLE:
+                animator.SetBool("WALK", false);
+                rb2d.velocity = Vector2.zero;
                 break;
 
-            case BossState.WALK:
 
-            default:
-                break;
         }
     }
 
@@ -87,18 +128,19 @@ public class BOSS_MOVEMENT : MonoBehaviour
                 break;
             default:
                 break;
+
         }
     }
 
-    void GetInputs()
-    {
-        bossDir = new Vector2(Input.GetAxisRaw("Horizontal_Boss"), Input.GetAxisRaw("Vertical_Boss"));
+    //void GetInputs()
+    //{
+    //    bossDir = new Vector2(Input.GetAxisRaw("HorizontalBoss"), Input.GetAxisRaw("VerticalBoss"));
 
-        if(bossDir.magnitude != 0)
-        {
-            animator.SetBool("WALK", true);
-        }
-    }
+    //    if (bossDir.magnitude != 0)
+    //    {
+    //        animator.SetBool("WALK", true);
+    //    }
+    //}
 
     void TransitionToState(BossState nextState)
     {
@@ -106,5 +148,18 @@ public class BOSS_MOVEMENT : MonoBehaviour
         currentState = nextState;
         OnStateEnter();
 
+    }
+
+    private void FixedUpdate()
+    {
+        rb2d.velocity = posPlayer.normalized * bossSpeed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            rb2d.velocity = Vector2.zero;
+        }
     }
 }
