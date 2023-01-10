@@ -21,11 +21,12 @@ public class PlayerMovement : MonoBehaviour
 
     float attackDuration = .35f;
     float attackTimer;
+    int attackCount;
+    float attackCooldown;
 
     float speed;
 
     Vector2 dirInput;
-
 
 
     bool sprintInput;
@@ -47,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         WALK,
         RUN,
         ATTACK1,
+        ATTACK2,
+        ATTACK3,
+        ATTACK4,
         JUMPUP,
         JUMPMAX,
         JUMPDOWN,
@@ -65,25 +69,30 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+
         //FONCTION POUR RECUPERER LES INPUTS DU JOUEUR
         GetInputs();
 
         OnStateUpdate();
 
         //FONCTION DE SAUT
+
         Jump();
 
-        //LA PLAYER N'EST PLUS EN SAUT SI LE TIMEUR DE SAUT EST INFERIEUR A ZERO
-        if(jumpTimer <= 0f)
-        {
-            isJumping = false;
-        }
+
+        attackCooldown += Time.deltaTime;
+
+
+        
 
 
     }
 
     private void Jump()
     {
+
 
         //SI LE TIMER DE SAUT EST INFERIEUR AU TIMER DE DUREE, ET QUE LE JOUEUR EST EN COURS DE SAUT
         if (jumpTimer < jumpDuration && isJumping)
@@ -98,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
             //MODIFICATION DE LA POSITION DE GRAPHICS, EN FONCTION DE LA POSITION DE (Y*HAUTEUR DE SAUT) SUR L'ANIMATION CURVE
             graphics.transform.localPosition = new Vector3(graphics.transform.localPosition.x, y * jumpHeight, graphics.transform.localPosition.z);
         }
+
 
     }
 
@@ -129,14 +139,31 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
                 break;
             case PlayerState.ATTACK1:
+
+                if (attackCooldown <= 1f && attackCount < 3)
+                {
+                    attackCooldown = 0f;
+                    attackCount += 1;
+                }
+
+                if(attackCooldown > .8f || attackCount > 3)
+                {
+                    attackCooldown = 0f;
+                    attackCount = 0;
+                }
+
+                
                 animator.SetTrigger("ATTACK1");
+                animator.SetInteger("ATTACKCOUNT", attackCount);
+                
                 break;
             case PlayerState.JUMPUP:
 
+                animator.SetTrigger("JUMP");
                 //LE PLAYER EST EN SAUT
                 isJumping = true;
 
-                animator.SetTrigger("JUMP");
+
 
                 break;
             case PlayerState.JUMPMAX:
@@ -156,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerState.IDLE:
 
-                
+
                 if (dirInput != Vector2.zero && !sprintInput)
                 {
                     TransitionToState(PlayerState.WALK);
@@ -172,14 +199,14 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
-                if (jumpInput)
+                if (jumpInput && !isJumping)
                 {
                     TransitionToState(PlayerState.JUMPUP);
                 }
 
                 break;
             case PlayerState.WALK:
-                
+
                 speed = walkSpeed;
 
                 if (sprintInput)
@@ -197,7 +224,7 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
-                if (jumpInput)
+                if (jumpInput && !isJumping)
                 {
                     TransitionToState(PlayerState.JUMPUP);
                 }
@@ -205,7 +232,7 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.RUN:
-                
+
                 speed = sprintSpeed;
 
                 if (!sprintInput)
@@ -269,14 +296,18 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
 
-                break;
 
+
+
+                break;
             case PlayerState.JUMPUP:
+
 
                 TransitionToState(PlayerState.JUMPMAX);
 
                 break;
             case PlayerState.JUMPMAX:
+
 
                 TransitionToState(PlayerState.JUMPDOWN);
 
@@ -288,15 +319,17 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.JUMPLAND:
 
-                if (dirInput != Vector2.zero)
+                if (dirInput != Vector2.zero && jumpTimer > jumpDuration)
                 {
                     jumpTimer = 0f;
+                    isJumping = false;
                     TransitionToState(PlayerState.WALK);
                 }
 
-                if (dirInput == Vector2.zero)
+                if (dirInput == Vector2.zero && jumpTimer > jumpDuration)
                 {
                     jumpTimer = 0f;
+                    isJumping = false;
                     TransitionToState(PlayerState.IDLE);
                 }
 
@@ -372,14 +405,16 @@ public class PlayerMovement : MonoBehaviour
 
 
         jumpInput = Input.GetButtonDown("Jump");
-        
+
+
+
 
     }
 
     private void FixedUpdate()
     {
         //SI L'ATTAQUE N'EST PAS EN COURS, ON PEUT BOUGER LE PLAYER ------------------------------- NE FONCTIONNE PAS !!!!!
-        if(attackTimer >= 0)
+        if (attackTimer >= 0)
         {
             rb2d.velocity = dirInput.normalized * speed;
 
@@ -389,7 +424,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         //QUAND ON EST DANS LE COLLIDER2D D'UN OBJET ET QU'ON APPUIE SUR LA TOUCHE POUR RAMASSER
-        if(collision.gameObject.tag == "PICKUP" && Input.GetButtonDown("PickUp"))
+        if (collision.gameObject.tag == "PICKUP" && Input.GetButtonDown("PickUp"))
         {
             //ON PRECISE QU'ON TIENT UN OBJET
             isHolding = true;
