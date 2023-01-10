@@ -13,23 +13,26 @@ public class CanBehavior : MonoBehaviour
     float throwDistance = 5f;
 
     float t;
-
     float rotationFix;
+
+    bool inMotion;
 
     [SerializeField] float isRight;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isHolded;
 
 
-
-    float stopPosition;
-
+    Vector2 stopPosition;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        //ON RECUPERE LE RIGIDBODY DE L'OBJET
         rb2d = GetComponent<Rigidbody2D>();
+
+        //ON RECUPERE LE COLLIDER2D DE L'OBJET
         bc2d = GetComponent<BoxCollider2D>();
         
     }
@@ -38,48 +41,62 @@ public class CanBehavior : MonoBehaviour
     void Update()
     {
 
-        if(isHolded && transform.parent != null)
+        //SI L'OBJET EST TENU ET QU'IL A UN PARENT
+        if (isHolded && transform.parent != null)
         {
+
+            //SON ORIENTATION EST EGALE A CELLE DU PARENT
             isRight = transform.parent.rotation.y;
         }
 
+
+        //FONCTION POUR FIXER LA DIRECTION DU LANCER
         if(isRight == 1)
         {
+            //POUR ENVOYER A GAUCHE
             rotationFix = -1f;
         }
 
         if (isRight == 0)
         {
+            //POUR ENVOYER A DROITE
             rotationFix = 1f;
         }
 
+
+        //FONCTION POUR AJOUTER UNE FORCE QUAND ON JETE L'OBJET
         Throw();
 
-        if(stopPosition >= transform.position.y)
+        //SI L'OBJET EST EN MOUVEMENT ET QU'IL PASSE SOUS LES PIEDS DU PLAYER AU MOMENT DU LANCER
+        if (inMotion && transform.position.y < stopPosition.y)
         {
+            
+            t = 0f;
+            rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.velocity = Vector2.zero;
-            rb2d.mass = 0f;
+            //bc2d.isTrigger = false;
+            isHolded = false;
+
         }
+
     }
 
     private void Throw()
     {
+
+        t += Time.deltaTime;
+
         if (isHolded && Input.GetButtonDown("Attack1"))
         {
-            stopPosition = transform.parent.position.y;
+            t = 0f;
+            stopPosition = new Vector2(transform.parent.position.x, transform.parent.position.y);
 
-            t += Time.deltaTime;
+            
             rb2d.bodyType = RigidbodyType2D.Dynamic;
             float throwForce = Mathf.Sqrt(-2 * Physics2D.gravity.y * throwHeight * rb2d.mass);
             rb2d.AddForce(new Vector2(throwDistance * rotationFix, throwForce), ForceMode2D.Impulse);
             transform.parent = null;
-            if (t >= .5f)
-            {
-                t = 0f;
-                rb2d.bodyType = RigidbodyType2D.Kinematic;
-                bc2d.isTrigger = false;
-                isHolded = false;
-            }
+            inMotion = true;
         }
     }
 }

@@ -1,110 +1,152 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement: MonoBehaviour
 {
+    [SerializeField] Animator animator;
+    [SerializeField] float walkEnemySpeed = 5f;  
 
-    public Sprite[] sprites;
-    [SerializeField] float speed;
-    [SerializeField] float health;
-    [SerializeField] int dropCount;
-    GameObject dropObject;
-    Vector2 dirEnemy;
-    PlayerMovement playerScript;
-   [SerializeField] Animator animator;
-    float attackTimer;
-    float attackDuration;
+    [SerializeField] EnemyState currentState;
+    [SerializeField] Rigidbody2D rb2d;
+    [SerializeField] GameObject graphics;
+    [SerializeField] float jumpEnemyDuration = 3f;
+    public Transform player;
 
+    [SerializeField] float stopDistance = 10f;
+    public bool right;
+
+    Vector2 enemyDir;
+    public enum EnemyState
+    {
+        IDLE,
+        WALK,
+        JUMPUP,
+        JUMPMAX,
+        JUMPDOWN,
+        ATTACK01,
+        ATTACK02
+        
+        
+    }
+
+   
+   
+
+
+    // Start is called before the first frame update
     void Start()
     {
-        // Récupère le composant Animator de l'ennemi
-        animator = GetComponent<Animator>();
-
-        // Récupère le script de contrôle du joueur
-        playerScript = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
-
-        // Initialise le timer d'attaque à la durée d'attaque
-        attackTimer = attackDuration;
+        currentState = EnemyState.IDLE;
+        OnStateEnter();
     }
 
+    // Update is called once per frame
     void Update()
     {
-        // Mise à jour du timer d'attaque
-        attackTimer -= Time.deltaTime;
+        
 
-        // Si l'ennemi a des points de vie inférieurs à 0, il meurt
-        if (health <= 0)
+       
+        OnStateUpdate();
+
+        // SEULEMENT SI J'APPUI SUR UNE DIRECTION
+        if (enemyDir.magnitude != 0)
         {
-            // Fait apparaître des objets qui augmentent le score du joueur
-            for (int i = 0; i < dropCount; i++)
-            {
-                Instantiate(dropObject, transform.position, Quaternion.identity);
-            }
+            animator.SetBool("WALK_ENEMY01", true);
 
-            // Détruit l'ennemi
-            Destroy(gameObject);
         }
 
-        // Si le timer d'attaque est écoulé, attaque le joueur
-        if (attackTimer <= 0)
+        if (enemyDir.x != 0)
         {
-            // Réinitialise le timer d'attaque
-            attackTimer = attackDuration;
-
-            // Déclenche l'animation d'attaque
-            animator.SetTrigger("Attack");
-
-            // Attaque le joueur
-           // playerScript.TakeDamage();
+            right = enemyDir.x > 0;
+            graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
 
-        // Si le joueur est à proximité, se dirige vers lui
-        if (Vector2.Distance(transform.position, playerScript.transform.position) < 10f)
+        enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed * Time.deltaTime;
+
+        // Calcul de la distance entre l'ennemi et le joueur
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance == stopDistance)
         {
-            // Calcul la direction du joueur
-            Vector2 direction = (playerScript.transform.position - transform.position).normalized;
-
-            // Si le joueur est derrière l'ennemi, retourne l'animation de l'ennemi
-            if (direction.x < 0 && transform.localScale.x > 0)
-            {
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
-            else if (direction.x > 0 && transform.localScale.x < 0)
-            {
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
-
-            // Déplace l'ennemi dans la direction du joueur
-            //controller.move(direction * speed * Time.deltaTime, false);
-
-            // Met à jour l'animation de déplacement en fonction de la direction
-            if (direction.x > 0)
-            {
-                animator.SetTrigger("WALK");
-            }
-            else if (direction.x < 0)
-            {
-                animator.SetTrigger("WALK");
-            }
-            else if (direction.y > 0)
-            {
-                animator.SetTrigger("WALK");
-            }
-            else if (direction.y < 0)
-            {
-                animator.SetTrigger("WALK");
-            }
+            return;
         }
     }
+   
 
-    // Fonction appelée lorsque l'ennemi prend un coup
-    public void TakeDamage()
+    void OnStateEnter()
     {
-        // Diminue les points de vie de l'ennemi
-        health--;
+        switch (currentState)
+        {
+            case EnemyState.IDLE:
+                animator.SetBool("WALK_ENEMY01", false);
+                rb2d.velocity = Vector2.zero;
+                break;
+            case EnemyState.WALK:
+                break;
 
-        // Déclenche l'animation de dommage
-        animator.SetTrigger("HURT");
+        
+               
+            default:
+                break;
+        }
+    }
+    void OnStateUpdate()
+    {
+        switch (currentState)
+        {
+            case EnemyState.IDLE:
+                // TO WALK
+                if (enemyDir != Vector2.zero )
+                {
+                    TransitionToState(EnemyState.WALK);
+                }
+               
+                break;
+            case EnemyState.WALK:
+                rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
+               
+                // TO IDLE
+                if (enemyDir == Vector2.zero)
+                {
+                    TransitionToState(EnemyState.IDLE);
+                }
+                
+                break;
+            case EnemyState.JUMPUP:
+
+                TransitionToState(EnemyState.JUMPMAX);
+
+                break;
+            case EnemyState.JUMPMAX:
+                TransitionToState(EnemyState.JUMPDOWN);
+
+                break;
+            case EnemyState.JUMPDOWN:
+
+                
+                break;
+            default:
+                break;
+        }
+    }
+    void OnStateExit()
+    {
+        switch (currentState)
+        {
+            case EnemyState.IDLE:
+                break;
+            case EnemyState.WALK:
+                break;
+           
+               
+        }
+    }
+    void TransitionToState(EnemyState nextState)
+    {
+        OnStateExit();
+        currentState = nextState;
+        OnStateEnter();
     }
 }
 
