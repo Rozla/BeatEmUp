@@ -12,17 +12,25 @@ public class PlayerDetector : MonoBehaviour
             SendMessageUpwards("PlayerDetected");
         }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            SendMessageUpwards("PlayerEscaped");
+        }
+    }
 }
-    
-
-         
-
-            
-
-       
 
 
-        
-      
+
+
+
+
+
+
+
+
+
 
 
