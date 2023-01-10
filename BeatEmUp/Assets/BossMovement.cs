@@ -12,6 +12,8 @@ public class BossMovement : MonoBehaviour
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
 
+    private bool player_detected = false;
+
     Vector2 distance;
 
     Vector2 posPlayer;
@@ -34,18 +36,11 @@ public class BossMovement : MonoBehaviour
 
 
 
-
-
-
-
-
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         distance = new Vector2(1f, 1f);
     }
-
-
 
 
 
@@ -61,21 +56,55 @@ public class BossMovement : MonoBehaviour
         OnStateUpdate();
 
         posPlayer = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
+    }
+
+    void OnStateEnter()
+    {
+        switch (currentState)
+        {
+            case BossState.IDLE:
+                break;
+            case BossState.WALK:
+                animator.SetBool("WALK", true);
+                break;
+            case BossState.ATTACK:
+                break;
+            case BossState.SLAM:
+                break;
+            case BossState.DEATH:
+                break;
+            case BossState.TAUNT:
+                break;
+            default:
+                break;
+        }
+    }
 
 
 
+    void OnStateUpdate()
+    {
+        switch (currentState)
+        {
+            case BossState.IDLE:
+                if (true)
+                {
 
-
-
-
-
-
-
-
-
-
-
-
+                }
+                break;
+            case BossState.WALK:
+                break;
+            case BossState.ATTACK:
+                break;
+            case BossState.SLAM:
+                break;
+            case BossState.DEATH:
+                break;
+            case BossState.TAUNT:
+                break;
+            default:
+                break;
+        }
 
 
     }
@@ -87,50 +116,24 @@ public class BossMovement : MonoBehaviour
             case BossState.IDLE:
                 break;
             case BossState.WALK:
-                break;
-            case BossState.TAUNT:
+                animator.SetBool("WALK", false);
                 break;
             case BossState.ATTACK:
                 break;
-            case BossState.DEATH:
-                break;
             case BossState.SLAM:
                 break;
-        }
-    }
-
-    void OnStateEnter()
-    {
-        switch (currentState)
-        {
-            case BossState.IDLE:
-                animator.SetBool("WALK", false);
-                rb2d.velocity = Vector2.zero;
+            case BossState.DEATH:
                 break;
-
-
-        }
-    }
-
-
-
-    void OnStateUpdate()
-    {
-        switch (currentState)
-        {
-            case BossState.IDLE:
-                if (bossDir != Vector2.zero)
-                {
-                    TransitionToState(BossState.WALK);
-                }
-                break;
-            case BossState.WALK:
+            case BossState.TAUNT:
                 break;
             default:
                 break;
-
         }
     }
+
+
+
+
 
     //void GetInputs()
     //{
@@ -162,4 +165,14 @@ public class BossMovement : MonoBehaviour
             rb2d.velocity = Vector2.zero;
         }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (true)
+        {
+
+        }
+        
+    }
 }
+
