@@ -74,8 +74,6 @@ public class EnemyMovement : MonoBehaviour
                     animator.SetBool("WALK_ENEMY01", true);
                 }
 
-               
-
                 break;
             case EnemyState.ATTACK01:
                 animator.SetBool("IsAttacking", true);
@@ -111,7 +109,7 @@ public class EnemyMovement : MonoBehaviour
                     TransitionToState(EnemyState.IDLE);
                 }
                 //SI LE PLAYER EST A PORTE DE L'ENEMY JE JOUE MON ANIMATION D'ATTAQUE
-
+                // UTILISER LE RAYCAST POUR DETECTER LE PLAYER
                 break;
             case EnemyState.ATTACK01:
 
@@ -170,7 +168,7 @@ public class EnemyMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
-
+            // UTILISER LA COROUTINE POUR COMMENCER L'ANIMATION
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -178,6 +176,7 @@ public class EnemyMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             enemyDir = Vector2.zero;
+            // UTILISER LA COROUTINE POUR SORTIR DE L'ETAT
 
         }
 
