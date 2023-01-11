@@ -89,6 +89,7 @@ public class BossMovement : MonoBehaviour
             case BossState.IDLE:
                 if (true)
                 {
+                  
 
                 }
                 break;
