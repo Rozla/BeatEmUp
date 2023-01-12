@@ -12,11 +12,25 @@ public class BossMovement : MonoBehaviour
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
 
-    private bool player_detected = false;
+    public int NombreDeSec = 2;
+
+
+
+    bool attack;
 
     Vector2 distance;
 
     Vector2 posPlayer;
+    private void Start()
+    {
+        StartCoroutine("wait");
+    }
+
+    IEnumerable wait()
+    {
+        yield return new WaitForSeconds(NombreDeSec);
+        
+    }
 
 
 
@@ -34,15 +48,7 @@ public class BossMovement : MonoBehaviour
 
     }
 
-
-
-    void Start()
-    {
-        rb2d = GetComponent<Rigidbody2D>();
-        distance = new Vector2(1f, 1f);
-    }
-
-
+    
 
     void Update()
     {
@@ -56,6 +62,12 @@ public class BossMovement : MonoBehaviour
         OnStateUpdate();
 
         posPlayer = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
+
+        if (bossDir != posPlayer)
+        {
+            attack = false;
+            StartCoroutine("wait");
+        }
     }
 
     void OnStateEnter()
@@ -63,11 +75,15 @@ public class BossMovement : MonoBehaviour
         switch (currentState)
         {
             case BossState.IDLE:
+
+                animator.SetBool("WALK", false);
+                rb2d.velocity = Vector2.zero;
                 break;
             case BossState.WALK:
                 animator.SetBool("WALK", true);
                 break;
             case BossState.ATTACK:
+                animator.SetTrigger("ATTACK");
                 break;
             case BossState.SLAM:
                 break;
@@ -79,7 +95,11 @@ public class BossMovement : MonoBehaviour
                 break;
         }
     }
-
+    void Start()
+    {
+        rb2d = GetComponent<Rigidbody2D>();
+        distance = new Vector2(1f, 1f);
+    }
 
 
     void OnStateUpdate()
@@ -87,15 +107,41 @@ public class BossMovement : MonoBehaviour
         switch (currentState)
         {
             case BossState.IDLE:
-                if (true)
+                if (bossDir != Vector2.zero)
                 {
-                  
 
+                    TransitionToState(BossState.WALK);
+
+                }
+
+                if (attack == true)
+                {
+                    TransitionToState(BossState.ATTACK);
                 }
                 break;
             case BossState.WALK:
+
+                if (bossDir == Vector2.zero)
+                {
+                    TransitionToState(BossState.IDLE);
+                }
+
+                if (attack == true)
+                {
+                    TransitionToState(BossState.ATTACK);
+                }
                 break;
             case BossState.ATTACK:
+
+                if (bossDir != Vector2.zero)
+                {
+                    TransitionToState(BossState.WALK);
+                }
+
+                if (bossDir == Vector2.zero)
+                {
+                    TransitionToState(BossState.IDLE);
+                }
                 break;
             case BossState.SLAM:
                 break;
@@ -165,6 +211,8 @@ public class BossMovement : MonoBehaviour
         {
             rb2d.velocity = Vector2.zero;
         }
+
+       
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -174,6 +222,21 @@ public class BossMovement : MonoBehaviour
 
         }
         
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            attack = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            attack = false;
+        }
     }
 }
 
