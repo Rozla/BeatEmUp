@@ -11,13 +11,14 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
     [SerializeField] float jumpEnemyDuration = 3f;
+    [SerializeField] float playerDist = 1f;
 
-    
+    Coroutine attackCoroutine;
 
 
     public Transform player;
 
-    public bool right;
+    public bool right, isOnRange;
 
 
     Vector2 enemyDir;
@@ -47,13 +48,13 @@ public class EnemyMovement : MonoBehaviour
     {
         OnStateUpdate();
 
+
+
         if (enemyDir.x != 0)
         {
             right = enemyDir.x > 0;
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
-
-       
 
 
     }
@@ -64,6 +65,7 @@ public class EnemyMovement : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.IDLE:
+                animator.SetBool("IsIdle", true);
                 animator.SetBool("WALK_ENEMY01", false);
                 rb2d.velocity = Vector2.zero;
 
@@ -72,13 +74,14 @@ public class EnemyMovement : MonoBehaviour
                 if (enemyDir.magnitude != 0)
                 {
                     animator.SetBool("WALK_ENEMY01", true);
+                    animator.SetBool("IsIdle", false);
                 }
-
-               
 
                 break;
             case EnemyState.ATTACK01:
-                animator.SetBool("IsAttacking", true);
+                animator.SetTrigger("IsAttacking");
+                animator.SetBool("IsIdle", false);
+                animator.SetBool("WALK_ENEMY01", false);
                 break;
             case EnemyState.JUMPUP:
 
@@ -95,26 +98,31 @@ public class EnemyMovement : MonoBehaviour
         {
             case EnemyState.IDLE:
                 // TO WALK
-                if (enemyDir != Vector2.zero)
+                if (Vector2.Distance(transform.position, player.position) > playerDist)
                 {
+                    isOnRange = false;
                     TransitionToState(EnemyState.WALK);
+                    StopCoroutine(Attack());
                 }
-                //SI LE PLAYER EST A PORTE DE L'ENEMY JE JOUE MON ANIMATION D'ATTAQUE
 
                 break;
             case EnemyState.WALK:
-                rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
 
-                // TO IDLE
+                rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
+                if (Vector2.Distance(transform.position, player.position) <= playerDist)
+                {
+                    isOnRange = true;
+                    TransitionToState(EnemyState.IDLE);
+                    attackCoroutine = StartCoroutine(Attack());
+                }
+
                 if (enemyDir == Vector2.zero)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
-                //SI LE PLAYER EST A PORTE DE L'ENEMY JE JOUE MON ANIMATION D'ATTAQUE
 
                 break;
             case EnemyState.ATTACK01:
-
                 if (enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
@@ -147,7 +155,7 @@ public class EnemyMovement : MonoBehaviour
                 }
                 break;
             case EnemyState.ATTACK01:
-                animator.SetBool("IsAttacking", false);
+                animator.SetTrigger("IsAttacking");
                 break;
 
             case EnemyState.DEAD:
@@ -170,8 +178,11 @@ public class EnemyMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
-
         }
+
+        // UTILISER LA COROUTINE POUR COMMENCER L'ANIMATION
+
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -182,12 +193,18 @@ public class EnemyMovement : MonoBehaviour
         }
 
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private IEnumerator Attack()
     {
-        if (collision.gameObject.CompareTag("Player"))
+        while (isOnRange)
         {
-            ;
+            animator.SetBool("IsIdle", true);
+            yield return new WaitForSeconds(1);
+            animator.SetBool("IsIdle", false);
+            animator.SetTrigger("IsAttacking");
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
+            yield return new WaitForSeconds(1);
         }
     }
+
 }
 

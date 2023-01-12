@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] int lifeCount;
 
     [SerializeField] Slider healthSlider;
+    [SerializeField] TextMeshProUGUI lifeTMP;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +23,7 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        lifeTMP.text = lifeCount.ToString();
         healthSlider.value = currentHealth;
         healthSlider.maxValue = maxHealth;
 
