@@ -197,8 +197,10 @@ MonoBehaviour:
   rb2d: {fileID: 614726117}
   graphics: {fileID: 1298601955}
   jumpEnemyDuration: 3
+  playerDist: 1
   player: {fileID: 1926929594}
   right: 0
+  isOnRange: 0
 --- !u!4 &614726119
 Transform:
   m_ObjectHideFlags: 0
@@ -641,6 +643,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 159313442, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 533965831, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3122250675413081010, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_RootOrder
       value: 3
