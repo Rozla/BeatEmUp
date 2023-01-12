@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sprintSpeed = 8f;
     [SerializeField] GameObject graphics;
 
+    [SerializeField] GameObject dustJumpParticles;
+    [SerializeField] GameObject dustLandParticles;
 
     [SerializeField] AnimationCurve jumpCurve;
     [SerializeField] float jumpHeight = 3f;
@@ -63,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         currentState = PlayerState.IDLE;
-
+        
     }
 
     // Update is called once per frame
@@ -140,13 +142,18 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.ATTACK1:
 
-                if (attackCooldown <= 1f && attackCount < 3)
+                if(attackCount == 0)
+                {
+                    attackCooldown = 0f;
+                }
+
+                if (attackCooldown <= 1f && attackCount > 0)
                 {
                     attackCooldown = 0f;
                     attackCount += 1;
                 }
 
-                if(attackCooldown > .8f || attackCount > 3)
+                if((attackCount == 0 && attackCooldown > .8f) || attackCount > 3)
                 {
                     attackCooldown = 0f;
                     attackCount = 0;
@@ -160,6 +167,8 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.JUMPUP:
 
                 animator.SetTrigger("JUMP");
+                dustJumpParticles.gameObject.SetActive(true);
+
                 //LE PLAYER EST EN SAUT
                 isJumping = true;
 
@@ -171,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.JUMPDOWN:
                 break;
             case PlayerState.JUMPLAND:
+                
                 break;
             default:
                 break;
@@ -323,6 +333,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     jumpTimer = 0f;
                     isJumping = false;
+                    dustJumpParticles.gameObject.SetActive(false);
+                    StartCoroutine(DustLandParticles());
                     TransitionToState(PlayerState.WALK);
                 }
 
@@ -330,6 +342,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     jumpTimer = 0f;
                     isJumping = false;
+                    dustJumpParticles.gameObject.SetActive(false);
+                    StartCoroutine(DustLandParticles());
                     TransitionToState(PlayerState.IDLE);
                 }
 
@@ -353,10 +367,12 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.ATTACK1:
                 break;
             case PlayerState.JUMPUP:
+                
                 break;
             case PlayerState.JUMPMAX:
                 break;
             case PlayerState.JUMPDOWN:
+                
                 break;
             case PlayerState.JUMPLAND:
                 break;
@@ -380,7 +396,7 @@ public class PlayerMovement : MonoBehaviour
         dirInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         //SI LE PLAYER EST EN MOUVEMENT
-        if (dirInput != Vector2.zero)
+        if (!isJumping && dirInput != Vector2.zero)
         {
             //BOOL WALK DE L'ANIMATOR PASSE VRAI
             animator.SetBool("WALK", true);
@@ -441,5 +457,12 @@ public class PlayerMovement : MonoBehaviour
             //ON PRECISE DANS L'OBJET QU'IL EST ACTUELLEMENT DANS LES MAINS DE QUELQU'UN (PLAYER OU ENNEMY)
             collision.GetComponent<CanBehavior>().isHolded = true;
         }
+    }
+
+    IEnumerator DustLandParticles()
+    {
+        dustLandParticles.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        dustLandParticles.gameObject.SetActive(false);
     }
 }
