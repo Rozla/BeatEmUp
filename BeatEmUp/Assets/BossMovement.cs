@@ -99,6 +99,8 @@ public class BossMovement : MonoBehaviour
     }
 
 
+    
+
 
     void OnStateUpdate()
     {
@@ -174,6 +176,8 @@ public class BossMovement : MonoBehaviour
             default:
                 break;
         }
+
+
     }
 
 

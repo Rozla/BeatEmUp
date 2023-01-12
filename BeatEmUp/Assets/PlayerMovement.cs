@@ -4,44 +4,54 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("State Machine")]
     [SerializeField] RuntimeAnimatorController standardController;
     [SerializeField] RuntimeAnimatorController holdCanController;
-    [SerializeField] Rigidbody2D rb2d;
     [SerializeField] Animator animator;
     [SerializeField] PlayerState currentState;
+    [SerializeField] GameObject shadow;
+    bool isHolding;
+    Animator shadowAnimator;
+
+    [Header("Basic Moves Settings")]
+    [SerializeField] Rigidbody2D rb2d;
     [SerializeField] float walkSpeed = 5f;
     [SerializeField] float sprintSpeed = 8f;
     [SerializeField] GameObject graphics;
 
-    [SerializeField] GameObject dustJumpParticles;
-    [SerializeField] GameObject dustLandParticles;
+    Vector2 dirInput;
+    float speed;
+    bool sprintInput;
 
+    [HideInInspector]
+    public bool right;
+
+
+
+
+    [Header("Jump Settings")]
     [SerializeField] AnimationCurve jumpCurve;
     [SerializeField] float jumpHeight = 3f;
     [SerializeField] float jumpDuration = 3f;
     float jumpTimer;
+    bool jumpInput;
+    bool isJumping;
 
+
+    [Header("Attack Settings")]
     float attackDuration = .35f;
     float attackTimer;
     int attackCount;
     float attackCooldown;
-
-    float speed;
-
-    Vector2 dirInput;
-
-
-    bool sprintInput;
     bool attack1Input;
-    bool jumpInput;
-
-    bool isJumping;
-    bool isHolding;
     bool isOnAttack;
 
 
-    [HideInInspector]
-    public bool right;
+    [Header("Particles Settings")]
+    [SerializeField] GameObject dustJumpParticles;
+    [SerializeField] GameObject dustLandParticles;
+    [SerializeField] GameObject dustSprintParticles;
+    ParticleSystemRenderer psrDustSprint;
 
 
     public enum PlayerState
@@ -65,7 +75,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         currentState = PlayerState.IDLE;
-        
+        psrDustSprint = dustSprintParticles.GetComponent<ParticleSystemRenderer>();
+        shadowAnimator = shadow.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -139,15 +150,13 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.RUN:
+
+                StartCoroutine(DustSprintParticles());
+
                 break;
             case PlayerState.ATTACK1:
 
-                if(attackCount == 0)
-                {
-                    attackCooldown = 0f;
-                }
-
-                if (attackCooldown <= 1f && attackCount > 0)
+                if (attackCooldown <= 1f && attackCount == 0)
                 {
                     attackCooldown = 0f;
                     attackCount += 1;
@@ -167,8 +176,8 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.JUMPUP:
 
                 animator.SetTrigger("JUMP");
+                shadowAnimator.SetTrigger("JUMP");
                 dustJumpParticles.gameObject.SetActive(true);
-
                 //LE PLAYER EST EN SAUT
                 isJumping = true;
 
@@ -243,6 +252,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.RUN:
 
+                
                 speed = sprintSpeed;
 
                 if (!sprintInput)
@@ -410,6 +420,8 @@ public class PlayerMovement : MonoBehaviour
 
             //ON MODIFIE LA ROTATION EN Y DES GRAPHICS DU PLAYER
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
+
+            psrDustSprint.flip = right ? new Vector3(0, 0, 0) : new Vector3(1, 0, 0);
         }
 
 
@@ -464,5 +476,13 @@ public class PlayerMovement : MonoBehaviour
         dustLandParticles.gameObject.SetActive(true);
         yield return new WaitForSeconds(1f);
         dustLandParticles.gameObject.SetActive(false);
+    }
+
+    IEnumerator DustSprintParticles()
+    {
+        dustSprintParticles.GetComponent<ParticleSystemRenderer>();
+        dustSprintParticles.gameObject.SetActive(true);
+        yield return new WaitForSeconds(.3f);
+        dustSprintParticles.gameObject.SetActive(false);
     }
 }
