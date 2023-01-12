@@ -24,6 +24,8 @@ public class BossMovement : MonoBehaviour
     private void Start()
     {
         StartCoroutine("wait");
+        rb2d = GetComponent<Rigidbody2D>();
+        distance = new Vector2(1f, 1f);
     }
 
     IEnumerable wait()
@@ -95,11 +97,7 @@ public class BossMovement : MonoBehaviour
                 break;
         }
     }
-    void Start()
-    {
-        rb2d = GetComponent<Rigidbody2D>();
-        distance = new Vector2(1f, 1f);
-    }
+
 
 
     void OnStateUpdate()
