@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] float walkEnemySpeed = 5f;
 
     [SerializeField] EnemyState currentState;
-    [SerializeField] Rigidbody2D rb2d;
+    [SerializeField] public Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
-    [SerializeField] float jumpEnemyDuration = 3f;
     [SerializeField] float playerDist = 1f;
 
     Coroutine attackCoroutine;
@@ -20,7 +19,6 @@ public class EnemyMovement : MonoBehaviour
 
     public bool right, isOnRange;
 
-
     Vector2 enemyDir;
     public enum EnemyState
     {
@@ -29,27 +27,23 @@ public class EnemyMovement : MonoBehaviour
         JUMPUP,
         ATTACK01,
         ATTACK02,
+        HURT,
         DEAD
 
     }
-
-
-
-
 
     // Start is called before the first frame update
     void Start()
     {
         currentState = EnemyState.IDLE;
         OnStateEnter();
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
         OnStateUpdate();
-
-
 
         if (enemyDir.x != 0)
         {
@@ -84,16 +78,19 @@ public class EnemyMovement : MonoBehaviour
                 animator.SetBool("IsIdle", false);
                 animator.SetBool("WALK_ENEMY01", false);
                 break;
+
             case EnemyState.ATTACK02:
                 animator.SetTrigger("IsAttacking02");
                 animator.SetBool("IsIdle", false);
                 animator.SetBool("WALK_ENEMY01", false);
                 break;
-            case EnemyState.JUMPUP:
 
+            case EnemyState.HURT:
+                animator.SetTrigger("HURT");
                 break;
             case EnemyState.DEAD:
-
+                animator.SetTrigger("IsDead");
+                break;
             default:
                 break;
         }
@@ -129,7 +126,7 @@ public class EnemyMovement : MonoBehaviour
 
                 break;
             case EnemyState.ATTACK01:
-               
+
                 if (enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
@@ -150,8 +147,8 @@ public class EnemyMovement : MonoBehaviour
                     TransitionToState(EnemyState.IDLE);
                 }
                 break;
-              
-            case EnemyState.JUMPUP:
+
+            case EnemyState.HURT:
                 break;
 
             case EnemyState.DEAD:
@@ -173,15 +170,15 @@ public class EnemyMovement : MonoBehaviour
                 }
                 break;
             case EnemyState.ATTACK01:
-               
+
                 break;
             case EnemyState.ATTACK02:
-               
+
                 break;
 
             case EnemyState.DEAD:
                 break;
-            case EnemyState.JUMPUP:
+            case EnemyState.HURT:
             default:
                 break;
 
@@ -194,26 +191,27 @@ public class EnemyMovement : MonoBehaviour
         currentState = nextState;
         OnStateEnter();
     }
-    void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
-        }
 
-        // UTILISER LA COROUTINE POUR COMMENCER L'ANIMATION
+    //void OnTriggerStay2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
+    //    }
 
 
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            enemyDir = Vector2.zero;
 
-        }
 
-    }
+    //}
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        enemyDir = Vector2.zero;
+
+    //    }
+
+    //}
     private IEnumerator Attack()
     {
         while (isOnRange)
