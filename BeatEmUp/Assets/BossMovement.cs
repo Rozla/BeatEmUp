@@ -229,6 +229,10 @@ public class BossMovement : MonoBehaviour
         }
     }
 
+
+
+
+
     IEnumerator BossAttack()
     {
         

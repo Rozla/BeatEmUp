@@ -121,7 +121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1905584562
 Transform:
   m_ObjectHideFlags: 0
@@ -14970,7 +14970,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -15052,6 +15052,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   jumpHeight: 3
   jumpDuration: 1.1
+  punchCollider: {fileID: 1905584561}
   dustJumpParticles: {fileID: 2480675122648436545}
   dustLandParticles: {fileID: 1834685982990522750}
   dustSprintParticles: {fileID: 3078009706608794939}
