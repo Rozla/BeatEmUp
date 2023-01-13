@@ -28,6 +28,7 @@ public class EnemyMovement : MonoBehaviour
         WALK,
         JUMPUP,
         ATTACK01,
+        ATTACK02,
         DEAD
 
     }
@@ -83,6 +84,11 @@ public class EnemyMovement : MonoBehaviour
                 animator.SetBool("IsIdle", false);
                 animator.SetBool("WALK_ENEMY01", false);
                 break;
+            case EnemyState.ATTACK02:
+                animator.SetTrigger("IsAttacking02");
+                animator.SetBool("IsIdle", false);
+                animator.SetBool("WALK_ENEMY01", false);
+                break;
             case EnemyState.JUMPUP:
 
                 break;
@@ -123,6 +129,7 @@ public class EnemyMovement : MonoBehaviour
 
                 break;
             case EnemyState.ATTACK01:
+               
                 if (enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
@@ -133,6 +140,17 @@ public class EnemyMovement : MonoBehaviour
                 }
 
                 break;
+            case EnemyState.ATTACK02:
+                if (enemyDir != Vector2.zero)
+                {
+                    TransitionToState(EnemyState.WALK);
+                }
+                if (enemyDir == Vector2.zero)
+                {
+                    TransitionToState(EnemyState.IDLE);
+                }
+                break;
+              
             case EnemyState.JUMPUP:
                 break;
 
@@ -155,7 +173,10 @@ public class EnemyMovement : MonoBehaviour
                 }
                 break;
             case EnemyState.ATTACK01:
-                animator.SetTrigger("IsAttacking");
+               
+                break;
+            case EnemyState.ATTACK02:
+               
                 break;
 
             case EnemyState.DEAD:
@@ -201,6 +222,7 @@ public class EnemyMovement : MonoBehaviour
             yield return new WaitForSeconds(1);
             animator.SetBool("IsIdle", false);
             animator.SetTrigger("IsAttacking");
+            animator.SetTrigger("IsAttacking02");
             yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
             yield return new WaitForSeconds(1);
         }
