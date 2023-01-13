@@ -15055,6 +15055,8 @@ MonoBehaviour:
   dustJumpParticles: {fileID: 2480675122648436545}
   dustLandParticles: {fileID: 1834685982990522750}
   dustSprintParticles: {fileID: 3078009706608794939}
+  isHurt: 0
+  graphicsSR: {fileID: 3122250674275217155}
 --- !u!114 &533965831
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,39 +5,28 @@ using UnityEngine.AI;
 
 public class BossMovement : MonoBehaviour
 {
-    [SerializeField] GameObject Boss;
     [SerializeField] float bossSpeed = 5f;
-    Vector2 bossDir;
     [SerializeField] Animator animator;
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
+    [SerializeField] GameObject bossGraphics;
 
     public int NombreDeSec = 2;
 
+    Rigidbody2D rb2d;
 
 
     bool attack;
 
-    Vector2 distance;
-
     Vector2 posPlayer;
-    private void Start()
-    {
-        StartCoroutine("wait");
-        rb2d = GetComponent<Rigidbody2D>();
-        distance = new Vector2(1f, 1f);
-    }
-
-    IEnumerable wait()
-    {
-        yield return new WaitForSeconds(NombreDeSec);
-        
-    }
 
 
-
-
-    Rigidbody2D rb2d;
+    bool playerDetected;
+    [SerializeField] bool playerOnRange;
+    bool bossRight;
+    Coroutine attackCor;
+    int attackCount;
+    float attackCoolDown;
 
     public enum BossState
     {
@@ -50,26 +39,35 @@ public class BossMovement : MonoBehaviour
 
     }
 
-    
+    private void Start()
+    {
+        currentState = BossState.IDLE;
+        rb2d = GetComponent<Rigidbody2D>();
+        //attackCor = StartCoroutine(BossAttack());
+    }
+
 
     void Update()
     {
 
+        //transform.LookAt(Boss.transform.position);
 
-        if (Boss != null)
-        {
-            transform.LookAt(Boss.transform.position);
-        }
 
         OnStateUpdate();
 
         posPlayer = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
 
-        if (bossDir != posPlayer)
+        if(rb2d.velocity.x != 0)
         {
-            attack = false;
-            StartCoroutine("wait");
+            bossRight = rb2d.velocity.x > 0;
+
+            bossGraphics.transform.rotation = bossRight ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
+            
         }
+
+        Debug.Log(attackCount);
+        
+        attackCoolDown += Time.deltaTime;
     }
 
     void OnStateEnter()
@@ -77,12 +75,13 @@ public class BossMovement : MonoBehaviour
         switch (currentState)
         {
             case BossState.IDLE:
-
-                animator.SetBool("WALK", false);
                 rb2d.velocity = Vector2.zero;
+                animator.SetBool("WALK", false);
+
                 break;
             case BossState.WALK:
                 animator.SetBool("WALK", true);
+
                 break;
             case BossState.ATTACK:
                 animator.SetTrigger("ATTACK");
@@ -98,50 +97,52 @@ public class BossMovement : MonoBehaviour
         }
     }
 
-
     
-
-
     void OnStateUpdate()
     {
         switch (currentState)
         {
             case BossState.IDLE:
-                if (bossDir != Vector2.zero)
-                {
 
+                if (playerDetected && !playerOnRange)
+                {
                     TransitionToState(BossState.WALK);
-
                 }
 
-                if (attack == true)
+                if (playerOnRange)
                 {
-                    TransitionToState(BossState.ATTACK);
+                    attackCoolDown = 0f;
+                    attackCount = attackCount == 0 ? 1 : 0;
+                    StartCoroutine(BossAttack());
                 }
+
                 break;
             case BossState.WALK:
 
-                if (bossDir == Vector2.zero)
+                
+
+                if (!playerDetected || playerOnRange)
                 {
                     TransitionToState(BossState.IDLE);
                 }
 
-                if (attack == true)
-                {
-                    TransitionToState(BossState.ATTACK);
-                }
                 break;
             case BossState.ATTACK:
 
-                if (bossDir != Vector2.zero)
+                if (attackCount == 0 && attackCoolDown > 1.5f)
                 {
-                    TransitionToState(BossState.WALK);
-                }
-
-                if (bossDir == Vector2.zero)
-                {
+                    animator.SetInteger("ATTACKCOUNT", 1);
                     TransitionToState(BossState.IDLE);
                 }
+
+                if(attackCount == 1 && attackCoolDown > 1.5f)
+                {
+                    animator.SetInteger("ATTACKCOUNT", 0);
+                    TransitionToState(BossState.IDLE);
+                }
+
+
+
                 break;
             case BossState.SLAM:
                 break;
@@ -152,8 +153,6 @@ public class BossMovement : MonoBehaviour
             default:
                 break;
         }
-
-
     }
 
     void OnStateExit()
@@ -163,7 +162,6 @@ public class BossMovement : MonoBehaviour
             case BossState.IDLE:
                 break;
             case BossState.WALK:
-                animator.SetBool("WALK", false);
                 break;
             case BossState.ATTACK:
                 break;
@@ -176,23 +174,10 @@ public class BossMovement : MonoBehaviour
             default:
                 break;
         }
-
-
     }
 
 
 
-
-
-    //void GetInputs()
-    //{
-    //    bossDir = new Vector2(Input.GetAxisRaw("HorizontalBoss"), Input.GetAxisRaw("VerticalBoss"));
-
-    //    if (bossDir.magnitude != 0)
-    //    {
-    //        animator.SetBool("WALK", true);
-    //    }
-    //}
 
     void TransitionToState(BossState nextState)
     {
@@ -204,41 +189,52 @@ public class BossMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb2d.velocity = posPlayer.normalized * bossSpeed;
+        if (playerDetected)
+        {
+            rb2d.velocity = posPlayer.normalized * bossSpeed;
+
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag == "Player")
         {
-            rb2d.velocity = Vector2.zero;
+            playerDetected = true;
         }
-
-       
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (true)
+        if(collision.gameObject.tag == "Player")
         {
-
+            playerDetected = false;
         }
-        
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag == "Player")
         {
-            attack = true;
+            playerOnRange = true;
+            TransitionToState(BossState.IDLE);
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag == "Player")
         {
-            attack = false;
+            playerOnRange = false;
         }
     }
+
+    IEnumerator BossAttack()
+    {
+        
+        TransitionToState(BossState.ATTACK);
+        yield return new WaitForSeconds(.75f);
+    }
+
 }
 

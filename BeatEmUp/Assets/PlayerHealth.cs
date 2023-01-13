@@ -7,8 +7,8 @@ using TMPro;
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] float maxHealth = 100f;
-    [SerializeField] float currentHealth;
-    [SerializeField] int lifeCount;
+    [SerializeField] public float currentHealth;
+    [SerializeField] public int lifeCount;
 
     [SerializeField] Slider healthSlider;
     [SerializeField] TextMeshProUGUI lifeTMP;
