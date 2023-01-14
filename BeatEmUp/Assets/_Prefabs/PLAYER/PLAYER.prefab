@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 692753057}
   - component: {fileID: 692753058}
   - component: {fileID: 692753059}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1905584562}
   - component: {fileID: 1905584563}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Punch_Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 3496270625723077339}
   - component: {fileID: 982688171754026724}
   - component: {fileID: 8647112925638799903}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Dust_Land
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5051,7 +5051,7 @@ GameObject:
   - component: {fileID: 493003947177977382}
   - component: {fileID: 2913475149497574933}
   - component: {fileID: 8558376360214219817}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Dust_Jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9936,7 +9936,7 @@ GameObject:
   - component: {fileID: 4526675981715791862}
   - component: {fileID: 2689624441454526}
   - component: {fileID: 5527076135996797011}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Dust_Sprint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14821,7 +14821,7 @@ GameObject:
   - component: {fileID: 3122250674275217153}
   - component: {fileID: 3122250674275217152}
   - component: {fileID: 3122250674275217155}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GRAPHICS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14931,7 +14931,7 @@ GameObject:
   - component: {fileID: 533965831}
   - component: {fileID: 159313442}
   - component: {fileID: 1286296136}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PLAYER
   m_TagString: Player
   m_Icon: {fileID: 0}
