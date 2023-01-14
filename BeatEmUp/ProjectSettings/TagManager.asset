@@ -6,14 +6,16 @@ TagManager:
   tags:
   - Enemy
   - Enemy02
+  - PICKUP
+  - Boss
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Camera
   - 
   - 
   - 

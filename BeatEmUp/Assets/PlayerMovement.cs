@@ -39,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     [Header("Attack Settings")]
+    [SerializeField] GameObject punchCollider;
     float attackDuration = .35f;
     float attackTimer;
     int attackCount;
@@ -54,6 +55,11 @@ public class PlayerMovement : MonoBehaviour
     ParticleSystemRenderer psrDustSprint;
 
 
+    [Header("Hurt and Death Settings")]
+    [SerializeField] bool isHurt;
+    [SerializeField] SpriteRenderer graphicsSR;
+
+
     public enum PlayerState
     {
         IDLE,
@@ -66,7 +72,9 @@ public class PlayerMovement : MonoBehaviour
         JUMPUP,
         JUMPMAX,
         JUMPDOWN,
-        JUMPLAND
+        JUMPLAND,
+        HURT,
+        DEAD
     }
 
 
@@ -77,6 +85,8 @@ public class PlayerMovement : MonoBehaviour
         currentState = PlayerState.IDLE;
         psrDustSprint = dustSprintParticles.GetComponent<ParticleSystemRenderer>();
         shadowAnimator = shadow.GetComponent<Animator>();
+
+
     }
 
     // Update is called once per frame
@@ -96,10 +106,6 @@ public class PlayerMovement : MonoBehaviour
 
 
         attackCooldown += Time.deltaTime;
-
-
-        
-
 
     }
 
@@ -133,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("WALK", false);
                 rb2d.velocity = Vector2.zero;
 
+
                 //SI LE JOUEUR NE TIENT PAS D'OBJET, ON PASSE SUR LES ANIMATIONS SANS OBJET
                 if (!isHolding)
                 {
@@ -156,22 +163,24 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.ATTACK1:
 
+                
+
                 if (attackCooldown <= 1f && attackCount == 0)
                 {
                     attackCooldown = 0f;
                     attackCount += 1;
                 }
 
-                if((attackCount == 0 && attackCooldown > .8f) || attackCount > 3)
+                if ((attackCount == 0 && attackCooldown > .8f) || attackCount > 3)
                 {
                     attackCooldown = 0f;
                     attackCount = 0;
                 }
 
-                
+
                 animator.SetTrigger("ATTACK1");
                 animator.SetInteger("ATTACKCOUNT", attackCount);
-                
+
                 break;
             case PlayerState.JUMPUP:
 
@@ -189,7 +198,18 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.JUMPDOWN:
                 break;
             case PlayerState.JUMPLAND:
-                
+
+                break;
+            case PlayerState.HURT:
+
+                StartCoroutine(IsHurt());
+                graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(188, 98, 98, 255);
+
+                break;
+            case PlayerState.DEAD:
+
+                animator.SetTrigger("DEAD");
+
                 break;
             default:
                 break;
@@ -215,12 +235,18 @@ public class PlayerMovement : MonoBehaviour
 
                 if (attack1Input)
                 {
+                    StartCoroutine(Attack());
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
                 if (jumpInput && !isJumping)
                 {
                     TransitionToState(PlayerState.JUMPUP);
+                }
+
+                if (isHurt)
+                {
+                    TransitionToState(PlayerState.HURT);
                 }
 
                 break;
@@ -240,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (attack1Input)
                 {
+                    StartCoroutine(Attack());
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
@@ -248,11 +275,15 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.JUMPUP);
                 }
 
+                if (isHurt)
+                {
+                    TransitionToState(PlayerState.HURT);
+                }
 
                 break;
             case PlayerState.RUN:
 
-                
+
                 speed = sprintSpeed;
 
                 if (!sprintInput)
@@ -263,6 +294,11 @@ public class PlayerMovement : MonoBehaviour
                 if (dirInput == Vector2.zero)
                 {
                     TransitionToState(PlayerState.IDLE);
+                }
+
+                if (isHurt)
+                {
+                    TransitionToState(PlayerState.HURT);
                 }
 
                 break;
@@ -316,7 +352,10 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
 
-
+                if (isHurt)
+                {
+                    TransitionToState(PlayerState.HURT);
+                }
 
 
                 break;
@@ -358,6 +397,10 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 break;
+            case PlayerState.HURT:
+                break;
+            case PlayerState.DEAD:
+                break;
 
             default:
                 break;
@@ -375,16 +418,22 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
                 break;
             case PlayerState.ATTACK1:
+                
                 break;
             case PlayerState.JUMPUP:
-                
+
                 break;
             case PlayerState.JUMPMAX:
                 break;
             case PlayerState.JUMPDOWN:
-                
+
                 break;
             case PlayerState.JUMPLAND:
+                break;
+            case PlayerState.HURT:
+                graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+                break;
+            case PlayerState.DEAD:
                 break;
             default:
                 break;
@@ -471,6 +520,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     IEnumerator DustLandParticles()
     {
         dustLandParticles.gameObject.SetActive(true);
@@ -484,5 +534,38 @@ public class PlayerMovement : MonoBehaviour
         dustSprintParticles.gameObject.SetActive(true);
         yield return new WaitForSeconds(.3f);
         dustSprintParticles.gameObject.SetActive(false);
+    }
+
+    IEnumerator IsHurt()
+    {
+
+        GetComponent<PlayerHealth>().TakeDamage();
+        animator.SetBool("HURT", true);
+
+        speed = 0;
+
+        if (GetComponent<PlayerHealth>().currentHealth <= 0f)
+        {
+            yield return new WaitForSeconds(.3f);
+
+            isHurt = false;
+            animator.SetBool("HURT", false);
+            TransitionToState(PlayerState.DEAD);
+        }
+        else
+        {
+            yield return new WaitForSeconds(.3f);
+
+            isHurt = false;
+            animator.SetBool("HURT", false);
+            TransitionToState(PlayerState.IDLE);
+        }
+    }
+
+    IEnumerator Attack()
+    {
+        punchCollider.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        punchCollider.gameObject.SetActive(false);
     }
 }
