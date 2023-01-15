@@ -8,12 +8,13 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] float walkEnemySpeed = 5f;
 
     [SerializeField] EnemyState currentState;
-    [SerializeField] public Rigidbody2D rb2d;
+    [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
     [SerializeField] float playerDist = 1f;
 
     Coroutine attackCoroutine;
 
+    EnnemyHealth enemyHealthScript;
 
     public Transform player;
 
@@ -35,9 +36,12 @@ public class EnemyBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         currentState = EnemyState.IDLE;
         OnStateEnter();
         rb2d = GetComponent<Rigidbody2D>();
+        enemyHealthScript = GetComponent<EnnemyHealth>();
+
     }
 
     // Update is called once per frame
@@ -51,7 +55,12 @@ public class EnemyBehavior : MonoBehaviour
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
 
+        float enemyCurrentHealth = enemyHealthScript.currentHealth;
 
+        if (!isOnRange)
+        {
+
+        }
     }
 
 
@@ -87,6 +96,8 @@ public class EnemyBehavior : MonoBehaviour
 
             case EnemyState.HURT:
                 animator.SetTrigger("HURT");
+                animator.SetBool("IsIdle", false);
+                animator.SetBool("WALK_ENEMY01", false);
                 break;
             case EnemyState.DEAD:
                 animator.SetTrigger("IsDead");
@@ -100,13 +111,23 @@ public class EnemyBehavior : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.IDLE:
-                // TO WALK
+                // CHANGEMENT
+                if (Vector2.Distance(transform.position, player.position) <= playerDist)
+                {
+                    isOnRange = true;                  
+                    
+                    attackCoroutine = StartCoroutine(Attack());
+                }
                 if (Vector2.Distance(transform.position, player.position) > playerDist)
                 {
                     isOnRange = false;
                     TransitionToState(EnemyState.WALK);
                     StopCoroutine(Attack());
                 }
+                // if la vie de l'ennemie descend 
+                // TransitionToState(EnemyState.HURT);
+                // SI LA VIE DE MON ENNEMIE EST A ZERO 
+               //TransitionToState(EnemyState.DEAD);
 
                 break;
             case EnemyState.WALK:
@@ -123,6 +144,10 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
+                // if la vie de l'ennemie descend 
+                //TransitionToState(EnemyState.HURT);
+                // SI LA VIE DE MON ENNEMIE EST A ZERO 
+                //TransitionToState(EnemyState.DEAD);
 
                 break;
             case EnemyState.ATTACK01:
@@ -147,9 +172,23 @@ public class EnemyBehavior : MonoBehaviour
                     TransitionToState(EnemyState.IDLE);
                 }
                 break;
+            // if la vie de l'ennemie descend 
+            // TransitionToState(EnemyState.HURT);
+            // SI LA VIE DE MON ENNEMIE EST A ZERO 
+            //TransitionToState(EnemyState.DEAD);
 
             case EnemyState.HURT:
+                if (enemyDir != Vector2.zero)
+                {
+                    TransitionToState(EnemyState.WALK);
+                }
+                if (enemyDir == Vector2.zero)
+                {
+                    TransitionToState(EnemyState.IDLE);
+                }
                 break;
+            // SI LA VIE DE MON ENNEMIE EST A ZERO 
+            //TransitionToState(EnemyState.DEAD);
 
             case EnemyState.DEAD:
 
@@ -163,11 +202,12 @@ public class EnemyBehavior : MonoBehaviour
         {
             case EnemyState.IDLE:
                 break;
+                
             case EnemyState.WALK:
-                if (enemyDir.magnitude != 0)
-                {
-                    animator.SetBool("WALK_ENEMY01", false);
-                }
+                //if (enemyDir.magnitude != 0)
+                //{
+                //    animator.SetBool("WALK_ENEMY01", false);
+                //}
                 break;
             case EnemyState.ATTACK01:
 
@@ -192,26 +232,24 @@ public class EnemyBehavior : MonoBehaviour
         OnStateEnter();
     }
 
-    //void OnTriggerStay2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Player"))
-    //    {
-    //        enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
-    //    }
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+           
+            enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
+        }
 
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+           
+            enemyDir = Vector2.zero;
+        }
 
-
-
-    //}
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Player"))
-    //    {
-    //        enemyDir = Vector2.zero;
-
-    //    }
-
-    //}
+    }
     private IEnumerator Attack()
     {
         while (isOnRange)
@@ -221,8 +259,9 @@ public class EnemyBehavior : MonoBehaviour
             animator.SetBool("IsIdle", false);
             animator.SetTrigger("IsAttacking");
             animator.SetTrigger("IsAttacking02");
-            yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
             yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
+           
         }
     }
 
