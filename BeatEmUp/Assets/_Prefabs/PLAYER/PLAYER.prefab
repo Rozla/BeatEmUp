@@ -15026,6 +15026,7 @@ MonoBehaviour:
   animator: {fileID: 3122250674275217152}
   currentState: 0
   shadow: {fileID: 692753056}
+  isHolding: 0
   rb2d: {fileID: 3122250675413081013}
   walkSpeed: 5
   sprintSpeed: 8
