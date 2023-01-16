@@ -9,7 +9,7 @@ public class InstanceFinder : MonoBehaviour
 
     private void Awake()
     {
-        if(instance!= null)
+        if(instance == null)
         {
             instance = this;
 

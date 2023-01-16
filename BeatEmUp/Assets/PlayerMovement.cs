@@ -103,7 +103,10 @@ public class PlayerMovement : MonoBehaviour
 
         AttackCombo();
 
-
+        if (Input.GetKeyDown("w"))
+        {
+            Instantiate(record, transform.position, transform.rotation);
+        }
     }
 
     private void AttackCombo()
