@@ -24,6 +24,7 @@ public class BossMovement : MonoBehaviour
 
     Rigidbody2D rb2d;
 
+    public bool isDead;
 
     bool attack;
 
@@ -92,6 +93,10 @@ public class BossMovement : MonoBehaviour
 
         attackCoolDown += Time.deltaTime;
 
+        if (isDead)
+        {
+            BossIsDead();
+        }
 
     }
 
@@ -126,7 +131,7 @@ public class BossMovement : MonoBehaviour
             case BossState.SLAM:
                 break;
             case BossState.HURT:
-                animator.SetTrigger("HURT");
+                //animator.SetTrigger("HURT");
                 break;
             case BossState.DEATH:
                 animator.SetTrigger("DEATH");
@@ -157,14 +162,9 @@ public class BossMovement : MonoBehaviour
                     StartCoroutine(BossAttack());
                 }
 
-                if (GetComponent<BossHealth>().isDead == true)
-                {
-                    TransitionToState(BossState.DEATH);
-                }
-
                 if(GetComponent<BossHealth>().isHurt == true)
                 {
-                    
+                    TransitionToState(BossState.HURT);
                 }
 
                 break;
@@ -177,9 +177,9 @@ public class BossMovement : MonoBehaviour
                     TransitionToState(BossState.IDLE);
                 }
 
-                if (GetComponent<BossHealth>().isDead == true)
+                if (GetComponent<BossHealth>().isHurt == true)
                 {
-                    TransitionToState(BossState.DEATH);
+                    TransitionToState(BossState.HURT);
                 }
 
                 break;
@@ -197,9 +197,10 @@ public class BossMovement : MonoBehaviour
                     TransitionToState(BossState.IDLE);
                 }
 
-                if (GetComponent<BossHealth>().isDead == true)
+
+                if (GetComponent<BossHealth>().isHurt == true)
                 {
-                    TransitionToState(BossState.DEATH);
+                    TransitionToState(BossState.HURT);
                 }
 
                 break;
@@ -208,20 +209,16 @@ public class BossMovement : MonoBehaviour
             case BossState.HURT:
                 rb2d.velocity = Vector2.zero;
 
-                if(GetComponent<BossHealth>().isHurt == true)
-                {
-                    StartCoroutine(ChangeColor());
-
-                }
+                
 
                 break;
             case BossState.DEATH:
                 break;
             case BossState.TAUNT:
 
-                if (GetComponent<BossHealth>().isDead == true)
+                if (GetComponent<BossHealth>().isHurt == true)
                 {
-                    TransitionToState(BossState.DEATH);
+                    TransitionToState(BossState.HURT);
                 }
 
                 break;
@@ -318,14 +315,10 @@ public class BossMovement : MonoBehaviour
     }
 
 
-    IEnumerator ChangeColor()
+    public void BossIsDead()
     {
-        GetComponent<BossHealth>().isHurt = false;
-        bossSR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
-        yield return new WaitForSeconds(2f);
-        bossSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
-        TransitionToState(BossState.IDLE);
-    }
+        TransitionToState(BossState.DEATH);
+    } 
 
 }
 
