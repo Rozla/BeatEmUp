@@ -11,6 +11,7 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
     [SerializeField] float playerDist = 1f;
+    float currentHealth, maxHealth;
 
     Coroutine attackCoroutine;
 
@@ -36,6 +37,8 @@ public class EnemyBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentHealth = GetComponent<EnnemyHealth>().currentHealth;
+        maxHealth = GetComponent<EnnemyHealth>().maxHealth;
 
         currentState = EnemyState.IDLE;
         OnStateEnter();
