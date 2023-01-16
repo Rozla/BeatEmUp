@@ -1,9 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    [SerializeField] GameObject record;
+
     [Header("State Machine")]
     [SerializeField] RuntimeAnimatorController standardController;
     [SerializeField] RuntimeAnimatorController holdCanController;
@@ -20,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject graphics;
 
     Vector2 dirInput;
-    float speed;
     bool sprintInput;
 
     [HideInInspector]
@@ -40,12 +41,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Attack Settings")]
     [SerializeField] GameObject punchCollider;
-    float attackDuration = .35f;
-    float attackTimer;
+    float attackSpeed = 1f;
     int attackCount;
-    float attackCooldown;
     bool attack1Input;
-    bool isOnAttack;
+    bool isAttacking;
+    bool isResetting;
 
 
     [Header("Particles Settings")]
@@ -93,8 +93,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-
-
         //FONCTION POUR RECUPERER LES INPUTS DU JOUEUR
         GetInputs();
 
@@ -104,9 +102,22 @@ public class PlayerMovement : MonoBehaviour
 
         Jump();
 
+        AttackCombo();
 
-        attackCooldown += Time.deltaTime;
 
+    }
+
+    private void AttackCombo()
+    {
+        if (isAttacking && !isHolding)
+        {
+            animator.SetInteger("ATTACKCOUNT", attackCount);
+
+            if (attackCount == 4)
+            {
+                attackCount = 0;
+            }
+        }
     }
 
     private void Jump()
@@ -163,23 +174,15 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.ATTACK1:
 
-                
+                punchCollider.gameObject.SetActive(true);
 
-                if (attackCooldown <= 1f && attackCount == 0)
+                if (!isResetting)
                 {
-                    attackCooldown = 0f;
-                    attackCount += 1;
+                    isResetting = true;
+                    StartCoroutine(AttackReset());
                 }
+                StartCoroutine(AttackCD());
 
-                if ((attackCount == 0 && attackCooldown > .8f) || attackCount > 3)
-                {
-                    attackCooldown = 0f;
-                    attackCount = 0;
-                }
-
-
-                animator.SetTrigger("ATTACK1");
-                animator.SetInteger("ATTACKCOUNT", attackCount);
 
                 break;
             case PlayerState.JUMPUP:
@@ -233,9 +236,8 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.RUN);
                 }
 
-                if (attack1Input)
+                if (isAttacking)
                 {
-                    StartCoroutine(Attack());
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
@@ -252,7 +254,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.WALK:
 
-                speed = walkSpeed;
+                rb2d.velocity = dirInput.normalized * walkSpeed;
 
                 if (sprintInput)
                 {
@@ -264,9 +266,8 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.IDLE);
                 }
 
-                if (attack1Input)
+                if (isAttacking)
                 {
-                    StartCoroutine(Attack());
                     TransitionToState(PlayerState.ATTACK1);
                 }
 
@@ -284,7 +285,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
 
 
-                speed = sprintSpeed;
+                rb2d.velocity = dirInput.normalized * sprintSpeed;
 
                 if (!sprintInput)
                 {
@@ -305,6 +306,8 @@ public class PlayerMovement : MonoBehaviour
 
             case PlayerState.ATTACK1:
 
+                rb2d.velocity = dirInput.normalized * attackSpeed;
+
                 if (dirInput != Vector2.zero && !isHolding)
                 {
                     TransitionToState(PlayerState.WALK);
@@ -318,39 +321,22 @@ public class PlayerMovement : MonoBehaviour
                 //SI LE JOUEUR EST EN MOUVEMENT ET QU'IL TIENT UN OBJET
                 if (isHolding && dirInput != Vector2.zero)
                 {
-                    attackTimer += Time.deltaTime;
 
-                    //TIMER POUR ATTENDRE QUE L'ANIMATION TERMINE AVANT DE PASSER AU PROCHAIN ETAT
-                    if (attackTimer > attackDuration)
-                    {
-                        //IL LANCE L'OBJET DONC ON RETOURNE SUR LES ANIMATIONS SANS OBJET
-                        animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                    TransitionToState(PlayerState.WALK);
+                    isHolding = false;
 
-                        //ON DIT QU'IL NE TIENT PLUS D'OBJET ET ON REPASSE EN WALK
-                        isHolding = false;
-                        attackTimer = 0;
-                        TransitionToState(PlayerState.WALK);
-                    }
                 }
 
 
                 //SI LE JOUEUR N'EST PAS EN MOUVEMENT ET QU'IL TIENT UN OBJET
                 if (isHolding && dirInput == Vector2.zero)
                 {
-                    attackTimer += Time.deltaTime;
-
-                    //TIMER POUR ATTENDRE QUE L'ANIMATION TERMINE AVANT DE PASSER AU PROCHAIN ETAT
-                    if (attackTimer > attackDuration)
-                    {
-                        //IL LANCE L'OBJET DONC ON RETOURNE SUR LES ANIMATIONS SANS OBJET
-                        animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
-
-                        //ON DIT QU'IL NE TIENT PLUS D'OBJET ET ON REPASSE EN WALK
-                        isHolding = false;
-                        attackTimer = 0;
-                        TransitionToState(PlayerState.WALK);
-                    }
+                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
+                    TransitionToState(PlayerState.IDLE);
+                    isHolding = false;
                 }
+                
 
                 if (isHurt)
                 {
@@ -418,7 +404,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
                 break;
             case PlayerState.ATTACK1:
-                
+                punchCollider.gameObject.SetActive(false);
                 break;
             case PlayerState.JUMPUP:
 
@@ -478,7 +464,12 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("SPRINT", sprintInput);
 
 
-        attack1Input = Input.GetButtonDown("Attack1");
+        if (Input.GetButtonDown("Attack1") && !sprintInput)
+        {
+            isAttacking = true;
+            attackCount += 1;
+            animator.SetTrigger("ATTACK1");
+        }
 
 
         jumpInput = Input.GetButtonDown("Jump");
@@ -486,16 +477,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    }
-
-    private void FixedUpdate()
-    {
-        //SI L'ATTAQUE N'EST PAS EN COURS, ON PEUT BOUGER LE PLAYER ------------------------------- NE FONCTIONNE PAS !!!!!
-        if (attackTimer >= 0)
-        {
-            rb2d.velocity = dirInput.normalized * speed;
-
-        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -542,7 +523,6 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<PlayerHealth>().TakeDamage();
         animator.SetBool("HURT", true);
 
-        speed = 0;
 
         if (GetComponent<PlayerHealth>().currentHealth <= 0f)
         {
@@ -562,10 +542,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    IEnumerator Attack()
+    IEnumerator AttackReset()
     {
-        punchCollider.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        punchCollider.gameObject.SetActive(false);
+        float t = 0;
+        float attackDuration = 1.5f;
+
+        while (t < attackDuration)
+        {
+            t += Time.deltaTime;
+
+            if (Input.GetButtonDown("Attack1"))
+            {
+                t = 0;
+            }
+
+            yield return null;
+        }
+
+        attackCount = 0;
+        isResetting = false;
+
     }
+    IEnumerator AttackCD()
+    {
+        yield return new WaitForSeconds(.3f);
+
+        //TO IDLE
+        if (dirInput == Vector2.zero)
+        {
+            TransitionToState(PlayerState.IDLE);
+        }
+
+        //TO WALK
+        if (dirInput != Vector2.zero)
+        {
+            TransitionToState(PlayerState.WALK);
+        }
+    }
+
 }

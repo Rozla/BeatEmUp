@@ -55,12 +55,10 @@ public class EnemyBehavior : MonoBehaviour
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
 
-        float enemyCurrentHealth = enemyHealthScript.currentHealth;
+        //float enemyCurrentHealth = enemyHealthScript.currentHealth;
 
-        if (!isOnRange)
-        {
 
-        }
+        
     }
 
 

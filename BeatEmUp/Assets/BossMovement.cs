@@ -75,10 +75,10 @@ public class BossMovement : MonoBehaviour
 
         }
 
-        if (Input.GetKey("m"))
-        {
-            Jump();
-        }
+        //if (Input.GetKey("m"))
+        //{
+        //    Jump();
+        //}
 
         Debug.Log(attackCount);
 

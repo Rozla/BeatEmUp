@@ -133,4 +133,4 @@ MonoBehaviour:
   moveSpeed: 10
   offset: {x: 0, y: 0, z: -10}
   cameraBounds: {fileID: 8036046640010385500, guid: 56fbcc36811e080419a9b3611647f104, type: 3}
-  canFollow: 0
+  canFollow: 1
