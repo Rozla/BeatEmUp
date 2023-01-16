@@ -26,7 +26,8 @@ public class CollectiblesBehavior : MonoBehaviour
     {
 
 
-        destinationPoint = destination.position;
+        //destinationPoint = destination.position;
+        destinationPoint = InstanceFinder.instance.collectibleDestination.position;
 
         if(isSpawned)
         {

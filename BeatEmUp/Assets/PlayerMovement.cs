@@ -393,7 +393,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
                 break;
             case PlayerState.ATTACK1:
-                punchCollider.gameObject.SetActive(false);
+                
                 isAttacking = false;
                 break;
             case PlayerState.JUMPUP:
@@ -560,12 +560,14 @@ public class PlayerMovement : MonoBehaviour
         //TO IDLE
         if (dirInput == Vector2.zero)
         {
+            punchCollider.gameObject.SetActive(false);
             TransitionToState(PlayerState.IDLE);
         }
 
         //TO WALK
         if (dirInput != Vector2.zero)
         {
+            punchCollider.gameObject.SetActive(false);
             TransitionToState(PlayerState.WALK);
         }
     }
@@ -573,7 +575,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator ThrowTimer()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
         isHolding = false;
         TransitionToState(PlayerState.IDLE);
     }
