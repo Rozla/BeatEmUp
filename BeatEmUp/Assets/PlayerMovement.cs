@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Hurt and Death Settings")]
     [SerializeField] bool isHurt;
     [SerializeField] SpriteRenderer graphicsSR;
-
+    public bool isDead;
 
     public enum PlayerState
     {
@@ -107,6 +107,16 @@ public class PlayerMovement : MonoBehaviour
         {
             Instantiate(record, transform.position, transform.rotation);
         }
+
+        if (isDead)
+        {
+            PlayerDead();
+        }
+    }
+
+    void PlayerDead()
+    {
+        TransitionToState(PlayerState.DEAD);
     }
 
     private void AttackCombo()
