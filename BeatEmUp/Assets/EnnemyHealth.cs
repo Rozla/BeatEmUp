@@ -29,7 +29,7 @@ public class EnnemyHealth : MonoBehaviour
             Destroy(gameObject);
            
         }
-        if(currentLootCount < maxLootCount && currentHealth <= 0)
+        if (currentLootCount < maxLootCount && currentHealth <= 0)
         {
             //Random.insideUnitCircle pour générer un vecteur aléatoire dans un cercle unitaire
             Vector2 spawnPosition = (Vector2)transform.position + Random.insideUnitCircle * spawnRadius;
