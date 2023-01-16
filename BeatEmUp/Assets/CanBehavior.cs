@@ -85,7 +85,7 @@ public class CanBehavior : MonoBehaviour
 
         t += Time.deltaTime;
 
-        if (isHolded && Input.GetButtonDown("Attack1"))
+        if (isHolded && Input.GetButtonDown("Attack1") && transform.parent != null)
         {
             t = 0f;
             stopPosition = new Vector2(transform.parent.position.x, transform.parent.position.y);

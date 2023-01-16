@@ -8,10 +8,10 @@ public class EnnemyHealth : MonoBehaviour
     [SerializeField] Animator animator;
    
     [SerializeField] GameObject lootRecordPrefab;
-    [SerializeField] float spawnRadius = 3f;
+    [SerializeField] float spawnRadius = 1.5f;
     
     int currentLootCount = 0;
-    int maxLootCount = 1;
+    int maxLootCount = 3;
 
 
     void Start()
@@ -29,12 +29,12 @@ public class EnnemyHealth : MonoBehaviour
             Destroy(gameObject);
            
         }
-        if(currentLootCount < maxLootCount && currentHealth <= 0)
+        if (currentLootCount < maxLootCount && currentHealth <= 0)
         {
             //Random.insideUnitCircle pour générer un vecteur aléatoire dans un cercle unitaire
-            // Vector2 spawnPosition = (Vector2)transform.position + Random.insideUnitCircle * spawnRadius;
-            Instantiate(lootRecordPrefab, transform.position, transform.rotation);
-            //currentLootCount++;
+            Vector2 spawnPosition = (Vector2)transform.position + Random.insideUnitCircle * spawnRadius;
+            Instantiate(lootRecordPrefab, spawnPosition, Quaternion.identity);
+            currentLootCount++;
         }
     }
     public void TakeDamage()

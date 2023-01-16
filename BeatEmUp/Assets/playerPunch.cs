@@ -23,9 +23,9 @@ public class playerPunch : MonoBehaviour
             collision.gameObject.GetComponent<BossHealth>().TakeDamage();
         }
 
-        //if (collision.gameObject.tag == "Enemy")
-        //{
-        //    collision.gameObject.GetComponent<EnemyHealth>().TakeDamage();
-        //}
+        if (collision.gameObject.tag == "Enemy")
+        {
+            collision.gameObject.GetComponent<EnnemyHealth>().TakeDamage();
+        }
     }
 }
