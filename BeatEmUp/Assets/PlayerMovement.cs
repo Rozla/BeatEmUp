@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] PlayerState currentState;
     [SerializeField] GameObject shadow;
-    bool isHolding;
+    [SerializeField] bool isHolding;
     Animator shadowAnimator;
 
     [Header("Basic Moves Settings")]
@@ -41,9 +41,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Attack Settings")]
     [SerializeField] GameObject punchCollider;
-    float attackSpeed = 1f;
+    float attackSpeed = .1f;
     int attackCount;
-    bool attack1Input;
     bool isAttacking;
     bool isResetting;
 
@@ -174,14 +173,18 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.ATTACK1:
 
-                punchCollider.gameObject.SetActive(true);
-
-                if (!isResetting)
+                if (!isHolding)
                 {
-                    isResetting = true;
-                    StartCoroutine(AttackReset());
+
+                    punchCollider.gameObject.SetActive(true);
+
+                    if (!isResetting)
+                    {
+                        isResetting = true;
+                        StartCoroutine(AttackReset());
+                    }
+                    StartCoroutine(AttackCD());
                 }
-                StartCoroutine(AttackCD());
 
 
                 break;
@@ -319,24 +322,10 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 //SI LE JOUEUR EST EN MOUVEMENT ET QU'IL TIENT UN OBJET
-                if (isHolding && dirInput != Vector2.zero)
+                if (isHolding)
                 {
-
-                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
-                    TransitionToState(PlayerState.WALK);
-                    isHolding = false;
-
+                    StartCoroutine(ThrowTimer());
                 }
-
-
-                //SI LE JOUEUR N'EST PAS EN MOUVEMENT ET QU'IL TIENT UN OBJET
-                if (isHolding && dirInput == Vector2.zero)
-                {
-                    animator.runtimeAnimatorController = standardController as RuntimeAnimatorController;
-                    TransitionToState(PlayerState.IDLE);
-                    isHolding = false;
-                }
-                
 
                 if (isHurt)
                 {
@@ -405,6 +394,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.ATTACK1:
                 punchCollider.gameObject.SetActive(false);
+                isAttacking = false;
                 break;
             case PlayerState.JUMPUP:
 
@@ -580,4 +570,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    IEnumerator ThrowTimer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isHolding = false;
+        TransitionToState(PlayerState.IDLE);
+    }
 }
