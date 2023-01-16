@@ -8,10 +8,11 @@ public class BossHealth : MonoBehaviour
     [SerializeField] float maxHealth = 50f;
     [SerializeField] float currentHealth;
 
+    [SerializeField] Animator animator;
+
     
     float t = 0f;
     float hurtTimer = 0f;
-    public bool isDead;
     public bool isHurt;
 
 
@@ -26,7 +27,7 @@ public class BossHealth : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            isDead = true;
+            GetComponent<BossMovement>().isDead = true;
             t += Time.deltaTime;
             if (t > 1.5f)
             {
@@ -42,6 +43,7 @@ public class BossHealth : MonoBehaviour
         {
             isHurt = true;
             currentHealth -= 10f;
+            animator.SetTrigger("HURT");
         }
     }
 }
