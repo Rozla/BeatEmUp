@@ -10,6 +10,13 @@ public class BossMovement : MonoBehaviour
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
     [SerializeField] GameObject bossGraphics;
+    //[Header("Jump Settings")]
+    //[SerializeField] AnimationCurve jumpCurve;
+    //[SerializeField] float jumpHeight = 3f;
+    //[SerializeField] float jumpDuration = 3f;
+    //float jumpTimer;
+
+    //bool isJumping;
 
     public int NombreDeSec = 2;
 
@@ -20,6 +27,8 @@ public class BossMovement : MonoBehaviour
 
     Vector2 posPlayer;
 
+    float jumpSpeed = 3f;
+
 
     bool playerDetected;
     [SerializeField] bool playerOnRange;
@@ -28,6 +37,7 @@ public class BossMovement : MonoBehaviour
     int attackCount;
     float attackCoolDown;
 
+    public float jumpForce = 6f;
     public enum BossState
     {
         IDLE,
@@ -57,18 +67,37 @@ public class BossMovement : MonoBehaviour
 
         posPlayer = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
 
-        if(rb2d.velocity.x != 0)
+        if (rb2d.velocity.x != 0)
         {
             bossRight = rb2d.velocity.x > 0;
 
             bossGraphics.transform.rotation = bossRight ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
-            
+
+        }
+
+        if (Input.GetKey("m"))
+        {
+            Jump();
         }
 
         Debug.Log(attackCount);
-        
+
         attackCoolDown += Time.deltaTime;
+
+
     }
+
+//private void Jump()
+    //{
+
+        //jumpTimer += Time.deltaTime;
+        //float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
+        //bossGraphics.transform.localPosition = new Vector3(bossGraphics.transform.localPosition.x, y * jumpHeight, bossGraphics.transform.localPosition.z);
+
+    //}
+
+
+
 
     void OnStateEnter()
     {
@@ -87,8 +116,10 @@ public class BossMovement : MonoBehaviour
                 animator.SetTrigger("ATTACK");
                 break;
             case BossState.SLAM:
+
                 break;
             case BossState.DEATH:
+                animator.SetTrigger("DEATH");
                 break;
             case BossState.TAUNT:
                 break;
@@ -97,7 +128,7 @@ public class BossMovement : MonoBehaviour
         }
     }
 
-    
+
     void OnStateUpdate()
     {
         switch (currentState)
@@ -116,14 +147,24 @@ public class BossMovement : MonoBehaviour
                     StartCoroutine(BossAttack());
                 }
 
+                if (GetComponent<BossHealth>().isDead == true)
+                {
+                    TransitionToState(BossState.DEATH);
+                }
+
                 break;
             case BossState.WALK:
 
-                
+
 
                 if (!playerDetected || playerOnRange)
                 {
                     TransitionToState(BossState.IDLE);
+                }
+
+                if (GetComponent<BossHealth>().isDead == true)
+                {
+                    TransitionToState(BossState.DEATH);
                 }
 
                 break;
@@ -135,13 +176,16 @@ public class BossMovement : MonoBehaviour
                     TransitionToState(BossState.IDLE);
                 }
 
-                if(attackCount == 1 && attackCoolDown > 1.5f)
+                if (attackCount == 1 && attackCoolDown > 1.5f)
                 {
                     animator.SetInteger("ATTACKCOUNT", 0);
                     TransitionToState(BossState.IDLE);
                 }
 
-
+                if (GetComponent<BossHealth>().isDead == true)
+                {
+                    TransitionToState(BossState.DEATH);
+                }
 
                 break;
             case BossState.SLAM:
@@ -149,6 +193,12 @@ public class BossMovement : MonoBehaviour
             case BossState.DEATH:
                 break;
             case BossState.TAUNT:
+
+                if (GetComponent<BossHealth>().isDead == true)
+                {
+                    TransitionToState(BossState.DEATH);
+                }
+
                 break;
             default:
                 break;
@@ -198,7 +248,7 @@ public class BossMovement : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             playerDetected = true;
         }
@@ -206,7 +256,7 @@ public class BossMovement : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             playerDetected = false;
         }
@@ -214,7 +264,7 @@ public class BossMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             playerOnRange = true;
             TransitionToState(BossState.IDLE);
@@ -223,7 +273,7 @@ public class BossMovement : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             playerOnRange = false;
         }
@@ -235,7 +285,7 @@ public class BossMovement : MonoBehaviour
 
     IEnumerator BossAttack()
     {
-        
+
         TransitionToState(BossState.ATTACK);
         yield return new WaitForSeconds(.75f);
     }
