@@ -393,13 +393,96 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4629140765073166491, guid: ac127e8fb42512a44814f3f394fb7216, type: 3}
+      propertyPath: canFollow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4629140765073166491, guid: ac127e8fb42512a44814f3f394fb7216, type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1648968705}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac127e8fb42512a44814f3f394fb7216, type: 3}
+--- !u!1 &1648968698 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3122250675413081011, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
+  m_PrefabInstance: {fileID: 893921340}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1648968705 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3122250675413081010, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
   m_PrefabInstance: {fileID: 893921340}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &1778777311 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1986098352862183541, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+  m_PrefabInstance: {fileID: 1986098352157310122}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1986098352157310122
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1986098351648339204, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_Name
+      value: BOSS
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986098351648339225, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: bossSR
+      value: 
+      objectReference: {fileID: 1778777311}
+    - target: {fileID: 1986098351648339225, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1648968698}
+    - target: {fileID: 1986098351648339228, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
+      propertyPath: bossSR
+      value: 
+      objectReference: {fileID: 1778777311}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}

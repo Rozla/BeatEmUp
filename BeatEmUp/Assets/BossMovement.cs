@@ -10,6 +10,8 @@ public class BossMovement : MonoBehaviour
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
     [SerializeField] GameObject bossGraphics;
+    [SerializeField] SpriteRenderer bossSR;
+
     //[Header("Jump Settings")]
     //[SerializeField] AnimationCurve jumpCurve;
     //[SerializeField] float jumpHeight = 3f;
@@ -45,6 +47,7 @@ public class BossMovement : MonoBehaviour
         ATTACK,
         SLAM,
         DEATH,
+        HURT,
         TAUNT
 
     }
@@ -72,6 +75,11 @@ public class BossMovement : MonoBehaviour
             bossRight = rb2d.velocity.x > 0;
 
             bossGraphics.transform.rotation = bossRight ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
+
+        }
+
+        if (bossGraphics)
+        {
 
         }
 
@@ -116,7 +124,9 @@ public class BossMovement : MonoBehaviour
                 animator.SetTrigger("ATTACK");
                 break;
             case BossState.SLAM:
-
+                break;
+            case BossState.HURT:
+                animator.SetTrigger("HURT");
                 break;
             case BossState.DEATH:
                 animator.SetTrigger("DEATH");
@@ -150,6 +160,11 @@ public class BossMovement : MonoBehaviour
                 if (GetComponent<BossHealth>().isDead == true)
                 {
                     TransitionToState(BossState.DEATH);
+                }
+
+                if(GetComponent<BossHealth>().isHurt == true)
+                {
+                    
                 }
 
                 break;
@@ -190,6 +205,16 @@ public class BossMovement : MonoBehaviour
                 break;
             case BossState.SLAM:
                 break;
+            case BossState.HURT:
+                rb2d.velocity = Vector2.zero;
+
+                if(GetComponent<BossHealth>().isHurt == true)
+                {
+                    StartCoroutine(ChangeColor());
+
+                }
+
+                break;
             case BossState.DEATH:
                 break;
             case BossState.TAUNT:
@@ -216,6 +241,8 @@ public class BossMovement : MonoBehaviour
             case BossState.ATTACK:
                 break;
             case BossState.SLAM:
+                break;
+            case BossState.HURT:
                 break;
             case BossState.DEATH:
                 break;
@@ -288,6 +315,16 @@ public class BossMovement : MonoBehaviour
 
         TransitionToState(BossState.ATTACK);
         yield return new WaitForSeconds(.75f);
+    }
+
+
+    IEnumerator ChangeColor()
+    {
+        GetComponent<BossHealth>().isHurt = false;
+        bossSR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
+        yield return new WaitForSeconds(2f);
+        bossSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+        TransitionToState(BossState.IDLE);
     }
 
 }
