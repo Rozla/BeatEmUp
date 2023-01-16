@@ -15020,6 +15020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d27e84cb8ee664e820b6c83425c343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  record: {fileID: 2893781677784138512, guid: 2a46a768d10f2504687114195904917a, type: 3}
   standardController: {fileID: 9100000, guid: a9383f871cc38c340b96cc6b0398d3e2, type: 2}
   holdCanController: {fileID: 9100000, guid: a1d483f759bbf4740b3d020288815f03, type: 2}
   animator: {fileID: 3122250674275217152}
