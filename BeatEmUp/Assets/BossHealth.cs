@@ -30,6 +30,7 @@ public class BossHealth : MonoBehaviour
         if(currentHealth > 0)
         {
             currentHealth -= 10f;
+            
         }
     }
 }
