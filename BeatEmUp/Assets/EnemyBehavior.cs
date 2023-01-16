@@ -14,7 +14,7 @@ public class EnemyBehavior : MonoBehaviour
 
     Coroutine attackCoroutine;
 
-    EnnemyHealth enemyHealthScript;
+    //EnnemyHealth enemyHealthScript;
 
     public Transform player;
 
@@ -40,7 +40,7 @@ public class EnemyBehavior : MonoBehaviour
         currentState = EnemyState.IDLE;
         OnStateEnter();
         rb2d = GetComponent<Rigidbody2D>();
-        enemyHealthScript = GetComponent<EnnemyHealth>();
+        //enemyHealthScript = GetComponent<EnnemyHealth>();
 
     }
 
@@ -57,8 +57,7 @@ public class EnemyBehavior : MonoBehaviour
 
         //float enemyCurrentHealth = enemyHealthScript.currentHealth;
 
-
-        
+       
     }
 
 
@@ -122,6 +121,7 @@ public class EnemyBehavior : MonoBehaviour
                     TransitionToState(EnemyState.WALK);
                     StopCoroutine(Attack());
                 }
+
                 // if la vie de l'ennemie descend 
                 // TransitionToState(EnemyState.HURT);
                 // SI LA VIE DE MON ENNEMIE EST A ZERO 
@@ -131,6 +131,7 @@ public class EnemyBehavior : MonoBehaviour
             case EnemyState.WALK:
 
                 rb2d.velocity = enemyDir.normalized * walkEnemySpeed;
+
                 if (Vector2.Distance(transform.position, player.position) <= playerDist)
                 {
                     isOnRange = true;
