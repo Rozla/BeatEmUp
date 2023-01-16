@@ -4,21 +4,21 @@ using UnityEngine;
 public class CollectiblesBehavior : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
-    [SerializeField] Transform destination;
 
     Vector2 destinationPoint;
 
     Coroutine corAandD;
 
-    bool isSpawned = true;
+    bool isSpawned;
 
     bool isCollected;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        isSpawned = true;
         corAandD = StartCoroutine(AnimAndDestroy());
+
     }
 
     // Update is called once per frame
@@ -29,7 +29,7 @@ public class CollectiblesBehavior : MonoBehaviour
         //destinationPoint = destination.position;
         destinationPoint = InstanceFinder.instance.collectibleDestination.position;
 
-        if(isSpawned)
+        if (isSpawned)
         {
             StartCoroutine(AnimAndDestroy());
         }
