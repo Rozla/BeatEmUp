@@ -8,11 +8,11 @@ public class BossHealth : MonoBehaviour
     [SerializeField] float maxHealth = 50f;
     [SerializeField] float currentHealth;
 
+    
     float t = 0f;
-
+    float hurtTimer = 0f;
     public bool isDead;
-
-
+    public bool isHurt;
 
 
     // Start is called before the first frame update
@@ -33,23 +33,15 @@ public class BossHealth : MonoBehaviour
 
                 Destroy(gameObject);
             }
-
-
-
-
         }
-
-
     }
 
     public void TakeDamage()
     {
         if (currentHealth > 0)
         {
+            isHurt = true;
             currentHealth -= 10f;
         }
-
     }
-
-
 }
