@@ -6,26 +6,30 @@ public class VendingMachineBehavior : MonoBehaviour
 {
 
     [SerializeField] Animator machineAnimator;
+    [SerializeField] GameObject[] cansToSpawn;
 
-    int hitTaken = 0;
+    int hitTaken;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        hitTaken = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         machineAnimator.SetInteger("HITCOUNT", hitTaken);
+        Debug.Log(hitTaken);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void TakeDamage()
     {
-        if(collision.gameObject.tag == "Player" && hitTaken < 3)
+        if (hitTaken < 3)
         {
             hitTaken += 1;
+            Instantiate(cansToSpawn[Random.Range(0, cansToSpawn.Length)], transform.position, transform.rotation);
         }
     }
+
 }
