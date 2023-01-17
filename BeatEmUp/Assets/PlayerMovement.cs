@@ -51,13 +51,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject dustJumpParticles;
     [SerializeField] GameObject dustLandParticles;
     [SerializeField] GameObject dustSprintParticles;
+    [SerializeField] GameObject punchParticles;
     ParticleSystemRenderer psrDustSprint;
 
 
     [Header("Hurt and Death Settings")]
-    [SerializeField] bool isHurt;
+    [SerializeField] public bool isHurt;
     [SerializeField] SpriteRenderer graphicsSR;
-
+    public bool isDead;
+    bool isInvincible;
+    Vector2 dirHurt;
 
     public enum PlayerState
     {
@@ -92,6 +95,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
+        dirHurt = new Vector2(transform.position.x - 1f, transform.position.y);
+
         //FONCTION POUR RECUPERER LES INPUTS DU JOUEUR
         GetInputs();
 
@@ -107,6 +112,19 @@ public class PlayerMovement : MonoBehaviour
         {
             Instantiate(record, transform.position, transform.rotation);
         }
+
+        if (isDead)
+        {
+            StartCoroutine(LoseLife());
+        }
+
+        if(isHurt)
+        {
+            StartCoroutine(IsHurt());
+        }
+
+        
+        
     }
 
     private void AttackCombo()
@@ -189,6 +207,11 @@ public class PlayerMovement : MonoBehaviour
                     StartCoroutine(AttackCD());
                 }
 
+                if (isHolding)
+                {
+                    StartCoroutine(ThrowTimer());
+                }
+
 
                 break;
             case PlayerState.JUMPUP:
@@ -211,9 +234,8 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PlayerState.HURT:
 
-                StartCoroutine(IsHurt());
-                graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(188, 98, 98, 255);
-
+                animator.SetTrigger("HURT");
+                punchParticles.gameObject.SetActive(true);
                 break;
             case PlayerState.DEAD:
 
@@ -252,11 +274,6 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.JUMPUP);
                 }
 
-                if (isHurt)
-                {
-                    TransitionToState(PlayerState.HURT);
-                }
-
                 break;
             case PlayerState.WALK:
 
@@ -282,11 +299,6 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.JUMPUP);
                 }
 
-                if (isHurt)
-                {
-                    TransitionToState(PlayerState.HURT);
-                }
-
                 break;
             case PlayerState.RUN:
 
@@ -303,38 +315,11 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.IDLE);
                 }
 
-                if (isHurt)
-                {
-                    TransitionToState(PlayerState.HURT);
-                }
-
                 break;
 
             case PlayerState.ATTACK1:
 
                 rb2d.velocity = dirInput.normalized * attackSpeed;
-
-                if (dirInput != Vector2.zero && !isHolding)
-                {
-                    TransitionToState(PlayerState.WALK);
-                }
-
-                if (dirInput == Vector2.zero && !isHolding)
-                {
-                    TransitionToState(PlayerState.IDLE);
-                }
-
-                //SI LE JOUEUR EST EN MOUVEMENT ET QU'IL TIENT UN OBJET
-                if (isHolding)
-                {
-                    StartCoroutine(ThrowTimer());
-                }
-
-                if (isHurt)
-                {
-                    TransitionToState(PlayerState.HURT);
-                }
-
 
                 break;
             case PlayerState.JUMPUP:
@@ -376,13 +361,53 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.HURT:
+                
                 break;
             case PlayerState.DEAD:
+
                 break;
 
             default:
                 break;
         }
+    }
+
+    IEnumerator LoseLife()
+    {
+        rb2d.velocity = Vector2.zero;
+        isDead = false;
+        isInvincible = true;
+        TransitionToState(PlayerState.DEAD);
+        yield return new WaitForSeconds(1f);
+        graphicsSR.gameObject.SetActive(false);
+        shadow.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1f);
+        graphicsSR.gameObject.SetActive(true);
+        shadow.gameObject.SetActive(true);
+
+        if (GetComponent<PlayerHealth>().lifeCount < 0)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            isInvincible = false;
+            TransitionToState(PlayerState.IDLE);
+        }
+    }
+    IEnumerator IsHurt()
+    {
+        rb2d.velocity = Vector2.zero;
+        isHurt = false;
+        isInvincible = true;
+        TransitionToState(PlayerState.HURT);
+        graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
+        yield return new WaitForSeconds(1f);
+        rb2d.AddForce(dirHurt, ForceMode2D.Impulse);
+        graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+        isInvincible = false;
+        punchParticles.gameObject.SetActive(false);
+        TransitionToState(PlayerState.IDLE);
     }
 
     void OnStateExit()
@@ -396,7 +421,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.RUN:
                 break;
             case PlayerState.ATTACK1:
-                
+
                 isAttacking = false;
                 break;
             case PlayerState.JUMPUP:
@@ -441,7 +466,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //SI LE PLAYER N'EST PAS EN MOUVEMENT
-        if (dirInput.x != 0)
+        if (dirInput.x != 0 && !isInvincible)
         {
             //LA BOOL RIGHT EST VRAI SI LA DIRECTION EN X EST EGALE A ZERO
             right = dirInput.x > 0;
@@ -510,30 +535,6 @@ public class PlayerMovement : MonoBehaviour
         dustSprintParticles.gameObject.SetActive(false);
     }
 
-    IEnumerator IsHurt()
-    {
-
-        GetComponent<PlayerHealth>().TakeDamage();
-        animator.SetBool("HURT", true);
-
-
-        if (GetComponent<PlayerHealth>().currentHealth <= 0f)
-        {
-            yield return new WaitForSeconds(.3f);
-
-            isHurt = false;
-            animator.SetBool("HURT", false);
-            TransitionToState(PlayerState.DEAD);
-        }
-        else
-        {
-            yield return new WaitForSeconds(.3f);
-
-            isHurt = false;
-            animator.SetBool("HURT", false);
-            TransitionToState(PlayerState.IDLE);
-        }
-    }
 
     IEnumerator AttackReset()
     {
@@ -582,4 +583,13 @@ public class PlayerMovement : MonoBehaviour
         isHolding = false;
         TransitionToState(PlayerState.IDLE);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "EnemyDamageTest" && !isInvincible)
+        {
+            GetComponent<PlayerHealth>().TakeDamage();
+        }
+    }
 }
+

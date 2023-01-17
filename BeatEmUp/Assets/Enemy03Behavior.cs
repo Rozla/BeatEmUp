@@ -49,6 +49,8 @@ public class Enemy03Behavior : MonoBehaviour
         {
             case Enemy03State.IDLE:
                 animator.SetBool("IsIdle", true);
+                rb2d.velocity = Vector2.zero;
+
                 break;
             case Enemy03State.WALK:
                 animator.SetBool("IsWalking", true);

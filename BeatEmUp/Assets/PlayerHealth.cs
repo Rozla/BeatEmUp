@@ -37,10 +37,6 @@ public class PlayerHealth : MonoBehaviour
             TakeHealth();
         }
 
-        if(lifeCount < 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     public void TakeDamage()
@@ -49,8 +45,13 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0f)
         {
+            GetComponent<PlayerMovement>().isDead = true;
             lifeCount -= 1;
             currentHealth = maxHealth;
+        }
+        else
+        {
+            GetComponent<PlayerMovement>().isHurt = true;
         }
     }
 

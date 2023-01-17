@@ -11,6 +11,7 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
     [SerializeField] float playerDist = 1f;
+    float currentHealth, maxHealth;
 
     Coroutine attackCoroutine;
 
@@ -36,11 +37,14 @@ public class EnemyBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentHealth = GetComponent<EnnemyHealth>().currentHealth;
+        maxHealth = GetComponent<EnnemyHealth>().maxHealth;
 
         currentState = EnemyState.IDLE;
         OnStateEnter();
         rb2d = GetComponent<Rigidbody2D>();
-        //enemyHealthScript = GetComponent<EnnemyHealth>();
+
+        attackCoroutine = StartCoroutine(Attack());
 
     }
 
@@ -54,10 +58,13 @@ public class EnemyBehavior : MonoBehaviour
             right = enemyDir.x > 0;
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
-
+        if (isOnRange)
+        {
+            StartCoroutine(Attack());
+        }
+       
         //float enemyCurrentHealth = enemyHealthScript.currentHealth;
 
-       
     }
 
 
@@ -108,24 +115,26 @@ public class EnemyBehavior : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.IDLE:
-                // CHANGEMENT
+
                 if (Vector2.Distance(transform.position, player.position) <= playerDist)
                 {
-                    isOnRange = true;                  
-                    
-                    attackCoroutine = StartCoroutine(Attack());
+                    isOnRange = true;
+
                 }
                 if (Vector2.Distance(transform.position, player.position) > playerDist)
                 {
                     isOnRange = false;
+
+                }
+                if (enemyDir != Vector2.zero)
+                {
                     TransitionToState(EnemyState.WALK);
-                    StopCoroutine(Attack());
                 }
 
                 // if la vie de l'ennemie descend 
                 // TransitionToState(EnemyState.HURT);
                 // SI LA VIE DE MON ENNEMIE EST A ZERO 
-               //TransitionToState(EnemyState.DEAD);
+                //TransitionToState(EnemyState.DEAD);
 
                 break;
             case EnemyState.WALK:
@@ -136,13 +145,14 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     isOnRange = true;
                     TransitionToState(EnemyState.IDLE);
-                    attackCoroutine = StartCoroutine(Attack());
+
                 }
 
                 if (enemyDir == Vector2.zero)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
+
                 // if la vie de l'ennemie descend 
                 //TransitionToState(EnemyState.HURT);
                 // SI LA VIE DE MON ENNEMIE EST A ZERO 
@@ -177,7 +187,7 @@ public class EnemyBehavior : MonoBehaviour
             //TransitionToState(EnemyState.DEAD);
 
             case EnemyState.HURT:
-                if (enemyDir != Vector2.zero)
+                if (!isOnRange && enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
@@ -185,6 +195,7 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
+                
                 break;
             // SI LA VIE DE MON ENNEMIE EST A ZERO 
             //TransitionToState(EnemyState.DEAD);
@@ -201,7 +212,7 @@ public class EnemyBehavior : MonoBehaviour
         {
             case EnemyState.IDLE:
                 break;
-                
+
             case EnemyState.WALK:
                 //if (enemyDir.magnitude != 0)
                 //{
@@ -235,7 +246,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-           
+           // Vector3.MoveTowards(transform.position - player.position * walkEnemySpeed * Time.deltaTime);
             enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
         }
 
@@ -244,24 +255,23 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-           
             enemyDir = Vector2.zero;
         }
 
     }
-    private IEnumerator Attack()
+    IEnumerator Attack()
     {
-        while (isOnRange)
-        {
-            animator.SetBool("IsIdle", true);
-            yield return new WaitForSeconds(1);
-            animator.SetBool("IsIdle", false);
-            animator.SetTrigger("IsAttacking");
-            animator.SetTrigger("IsAttacking02");
-            yield return new WaitForSeconds(1);
-            yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
-           
-        }
+       
+        animator.SetBool("IsIdle", true);
+        yield return new WaitForSeconds(1);
+        animator.SetBool("IsIdle", false);
+       // TransitionToState(EnemyState.ATTACK01);
+        animator.SetTrigger("IsAttacking");
+        animator.SetTrigger("IsAttacking02");
+        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
+
+
     }
 
 }
