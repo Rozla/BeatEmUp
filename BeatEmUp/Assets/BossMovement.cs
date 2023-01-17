@@ -9,8 +9,14 @@ public class BossMovement : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] BossState currentState;
     [SerializeField] GameObject player;
+
     [SerializeField] GameObject bossGraphics;
     [SerializeField] SpriteRenderer bossSR;
+    [SerializeField] LayerMask layerMask;
+
+    public float throwForce = 10;
+
+    float playerDist = 1f;
 
     //[Header("Jump Settings")]
     //[SerializeField] AnimationCurve jumpCurve;
@@ -25,10 +31,14 @@ public class BossMovement : MonoBehaviour
     Rigidbody2D rb2d;
 
     public bool isDead;
+    public bool pickUpObjectDetected;
+
+    [SerializeField] float overlapRadius = 2.5f;
 
     bool attack;
 
     Vector2 posPlayer;
+
 
     float jumpSpeed = 3f;
 
@@ -39,6 +49,7 @@ public class BossMovement : MonoBehaviour
     Coroutine attackCor;
     int attackCount;
     float attackCoolDown;
+    Collider2D col;
 
     public float jumpForce = 6f;
     public enum BossState
@@ -52,6 +63,8 @@ public class BossMovement : MonoBehaviour
         TAUNT
 
     }
+
+    
 
     private void Start()
     {
@@ -79,10 +92,8 @@ public class BossMovement : MonoBehaviour
 
         }
 
-        if (bossGraphics)
-        {
+        Physics2D.OverlapCircle(transform.position, overlapRadius, layerMask);
 
-        }
 
         //if (Input.GetKey("m"))
         //{
@@ -100,12 +111,12 @@ public class BossMovement : MonoBehaviour
 
     }
 
-//private void Jump()
+    //private void Jump()
     //{
 
-        //jumpTimer += Time.deltaTime;
-        //float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
-        //bossGraphics.transform.localPosition = new Vector3(bossGraphics.transform.localPosition.x, y * jumpHeight, bossGraphics.transform.localPosition.z);
+    //jumpTimer += Time.deltaTime;
+    //float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
+    //bossGraphics.transform.localPosition = new Vector3(bossGraphics.transform.localPosition.x, y * jumpHeight, bossGraphics.transform.localPosition.z);
 
     //}
 
@@ -162,7 +173,7 @@ public class BossMovement : MonoBehaviour
                     StartCoroutine(BossAttack());
                 }
 
-                if(GetComponent<BossHealth>().isHurt == true)
+                if (GetComponent<BossHealth>().isHurt == true)
                 {
                     TransitionToState(BossState.HURT);
                 }
@@ -209,7 +220,7 @@ public class BossMovement : MonoBehaviour
             case BossState.HURT:
                 rb2d.velocity = Vector2.zero;
 
-                
+
 
                 break;
             case BossState.DEATH:
@@ -276,6 +287,11 @@ public class BossMovement : MonoBehaviour
         {
             playerDetected = true;
         }
+
+        if (collision.gameObject.tag == "PICKUP")
+        {
+            pickUpObjectDetected = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -283,6 +299,11 @@ public class BossMovement : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             playerDetected = false;
+        }
+
+        if (collision.gameObject.tag == "PICKUP")
+        {
+            pickUpObjectDetected = false;
         }
     }
 
@@ -318,7 +339,7 @@ public class BossMovement : MonoBehaviour
     public void BossIsDead()
     {
         TransitionToState(BossState.DEATH);
-    } 
+    }
 
 }
 
