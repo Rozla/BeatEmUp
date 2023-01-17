@@ -192,7 +192,11 @@ MonoBehaviour:
   currentState: 0
   player: {fileID: 0}
   bossGraphics: {fileID: 1986098352862183542}
+  bossSR: {fileID: 0}
+  throwForce: 10
   NombreDeSec: 2
+  isDead: 0
+  pickUpObjectDetected: 0
   playerOnRange: 0
   jumpForce: 6
 --- !u!114 &1986098351648339228
@@ -209,7 +213,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   currentHealth: 0
-  isDead: 0
+  animator: {fileID: 0}
+  isHurt: 0
 --- !u!1 &1986098352862183542
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +290,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 519138633, guid: d89b53359d1808d4491c8f26676020a0, type: 3}
-  m_Color: {r: 0.9433962, g: 0.8935564, b: 0.8935564, a: 1}
+  m_Color: {r: 0.8962264, g: 0.88783485, b: 0.76432896, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
