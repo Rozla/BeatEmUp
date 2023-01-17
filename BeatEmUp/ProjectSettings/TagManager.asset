@@ -8,6 +8,7 @@ TagManager:
   - Enemy02
   - PICKUP
   - Boss
+  - EnemyDamageTest
   layers:
   - Default
   - TransparentFX

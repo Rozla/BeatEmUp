@@ -63,7 +63,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sr: {fileID: 2893781678159830558}
-  destination: {fileID: 0}
 --- !u!1 &2893781678159830555
 GameObject:
   m_ObjectHideFlags: 0
