@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CanBehavior : MonoBehaviour
 {
-
+    [SerializeField] GameObject shadow;
 
     Rigidbody2D rb2d;
     BoxCollider2D bc2d;
@@ -40,10 +40,12 @@ public class CanBehavior : MonoBehaviour
     void Update()
     {
 
+        shadow.gameObject.SetActive(!isHolded);
+
         //SI L'OBJET EST TENU ET QU'IL A UN PARENT
         if (isHolded && transform.parent != null)
         {
-
+            
             //SON ORIENTATION EST EGALE A CELLE DU PARENT
             isRight = transform.parent.rotation.y;
         }
@@ -77,6 +79,7 @@ public class CanBehavior : MonoBehaviour
             isHolded = false;
 
         }
+
 
     }
 
