@@ -61,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isDead;
     bool isInvincible;
     Vector2 dirHurt;
+    Vector2 collisionDirection;
+    float timerHurt = 0f;
 
     public enum PlayerState
     {
@@ -94,8 +96,18 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
 
-        dirHurt = new Vector2(transform.position.x - 1f, transform.position.y);
+        if (isInvincible)
+        {
+            timerHurt += Time.deltaTime;
+
+            if (timerHurt < .5f)
+            {
+                transform.Translate(Vector3.right * collisionDirection * Time.deltaTime);
+
+            }
+        }
 
         //FONCTION POUR RECUPERER LES INPUTS DU JOUEUR
         GetInputs();
@@ -397,15 +409,15 @@ public class PlayerMovement : MonoBehaviour
     }
     IEnumerator IsHurt()
     {
-        rb2d.velocity = Vector2.zero;
+        rb2d.velocity = Vector3.zero;
         isHurt = false;
         isInvincible = true;
         TransitionToState(PlayerState.HURT);
         graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
         yield return new WaitForSeconds(1f);
-        rb2d.AddForce(dirHurt, ForceMode2D.Impulse);
         graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
         isInvincible = false;
+        timerHurt = 0f;
         punchParticles.gameObject.SetActive(false);
         TransitionToState(PlayerState.IDLE);
     }
@@ -456,7 +468,10 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //ON RECUPERE LES INPUTS HORIZONTAL ET VERTICAL
+
         dirInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        
 
         //SI LE PLAYER EST EN MOUVEMENT
         if (!isJumping && dirInput != Vector2.zero)
@@ -586,9 +601,28 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "EnemyDamageTest" && !isInvincible)
+        if(collision.gameObject.tag == "Enemy" && !isInvincible)
         {
             GetComponent<PlayerHealth>().TakeDamage();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Enemy" && !isInvincible)
+        {
+            
+            GetComponent<PlayerHealth>().TakeDamage();
+
+            // Get the contact point of the collision
+            ContactPoint2D contact = collision.GetContact(0);
+            // Calculate the direction of the collision
+            collisionDirection = contact.point - (Vector2)transform.position;
+            // Normalize the collision direction to get a unit vector
+            collisionDirection = collisionDirection.normalized;
+            // Multiply the collision direction by the desired force
+            collisionDirection *= -2f;
+
         }
     }
 }

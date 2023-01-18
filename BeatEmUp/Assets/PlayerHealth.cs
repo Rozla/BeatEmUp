@@ -23,9 +23,17 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lifeTMP.text = lifeCount.ToString();
-        healthSlider.value = currentHealth;
-        healthSlider.maxValue = maxHealth;
+        if(lifeTMP != null)
+        {
+            lifeTMP.text = lifeCount.ToString();
+
+        }
+
+        if(healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+            healthSlider.maxValue = maxHealth;
+        }
 
         if (Input.GetKeyDown("b"))
         {

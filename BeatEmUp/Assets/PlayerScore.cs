@@ -22,7 +22,10 @@ public class PlayerScore : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreText.text = scoreValue.ToString("000000");
+        if(scoreText != null)
+        {
+            scoreText.text = scoreValue.ToString("000000");
+        }
 
         if (addScore)
         {

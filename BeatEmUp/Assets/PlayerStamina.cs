@@ -19,8 +19,11 @@ public class PlayerStamina : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        staminaSlider.maxValue = maxStamina;
-        staminaSlider.value = currentStamina;
+        if(staminaSlider != null)
+        {
+            staminaSlider.maxValue = maxStamina;
+            staminaSlider.value = currentStamina;
+        }
     }
 
     public void TakeStamina()
