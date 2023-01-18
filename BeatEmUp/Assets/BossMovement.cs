@@ -14,9 +14,11 @@ public class BossMovement : MonoBehaviour
     [SerializeField] SpriteRenderer bossSR;
     [SerializeField] LayerMask layerMask;
 
+    [SerializeField] AnimationCurve jumpBoss;
+
     public float throwForce = 10;
 
-    float playerDist = 1f;
+    //float playerDist = 1f;
 
     //[Header("Jump Settings")]
     //[SerializeField] AnimationCurve jumpCurve;
@@ -32,6 +34,7 @@ public class BossMovement : MonoBehaviour
 
     public bool isDead;
     public bool pickUpObjectDetected;
+    
 
     [SerializeField] float overlapRadius = 2.5f;
 
@@ -40,7 +43,9 @@ public class BossMovement : MonoBehaviour
     Vector2 posPlayer;
 
 
-    float jumpSpeed = 3f;
+    float jumpTimer = 3f;
+    [SerializeField] float jumpDuration = 1f;
+    bool _isJumping;
 
 
     bool playerDetected;
@@ -64,7 +69,12 @@ public class BossMovement : MonoBehaviour
 
     }
 
-    
+    Rigidbody2D rigidbody2d;
+
+    void Awake()
+    {
+        rigidbody2d = GetComponent<Rigidbody2D>();
+    }
 
     private void Start()
     {
@@ -92,13 +102,15 @@ public class BossMovement : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            jumpTimer = 0f;
+        }
+
+        Jump();
+
         Physics2D.OverlapCircle(transform.position, overlapRadius, layerMask);
 
-
-        //if (Input.GetKey("m"))
-        //{
-        //    Jump();
-        //}
 
         Debug.Log(attackCount);
 
@@ -111,17 +123,15 @@ public class BossMovement : MonoBehaviour
 
     }
 
-    //private void Jump()
-    //{
-
-    //jumpTimer += Time.deltaTime;
-    //float y = jumpCurve.Evaluate(jumpTimer / jumpDuration);
-    //bossGraphics.transform.localPosition = new Vector3(bossGraphics.transform.localPosition.x, y * jumpHeight, bossGraphics.transform.localPosition.z);
-
-    //}
-
-
-
+    private void Jump()
+    {
+        if (jumpTimer < jumpDuration)
+        {
+            jumpTimer += Time.deltaTime;
+            float y = jumpBoss.Evaluate(jumpTimer / jumpDuration);
+            bossGraphics.transform.localPosition = new Vector3(transform.localPosition.x, y, transform.localPosition.z);
+        }
+    }
 
     void OnStateEnter()
     {
@@ -279,6 +289,8 @@ public class BossMovement : MonoBehaviour
             rb2d.velocity = posPlayer.normalized * bossSpeed;
 
         }
+
+       
     }
 
     private void OnTriggerStay2D(Collider2D collision)

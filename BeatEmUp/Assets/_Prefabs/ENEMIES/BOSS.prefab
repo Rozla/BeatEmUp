@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1986098351360956469}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.2375, z: 1}
+  m_LocalScale: {x: 1.2125, y: 0.25828123, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1986098351648339205}
@@ -193,10 +193,14 @@ MonoBehaviour:
   player: {fileID: 0}
   bossGraphics: {fileID: 1986098352862183542}
   bossSR: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   throwForce: 10
   NombreDeSec: 2
   isDead: 0
   pickUpObjectDetected: 0
+  overlapRadius: 2.5
   playerOnRange: 0
   jumpForce: 6
 --- !u!114 &1986098351648339228
