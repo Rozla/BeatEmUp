@@ -27,5 +27,10 @@ public class playerPunch : MonoBehaviour
         {
             collision.gameObject.GetComponent<EnnemyHealth>().TakeDamage();
         }
+
+        if(collision.gameObject.tag == "VENDINGMACHINE")
+        {
+            collision.gameObject.GetComponent<VendingMachineBehavior>().TakeDamage();
+        }
     }
 }

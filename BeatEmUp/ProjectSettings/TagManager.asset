@@ -9,6 +9,7 @@ TagManager:
   - PICKUP
   - Boss
   - EnemyDamageTest
+  - VENDINGMACHINE
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Camera
   - Level
   - Enemy
-  - 
+  - Collectibles
   - 
   - 
   - 
