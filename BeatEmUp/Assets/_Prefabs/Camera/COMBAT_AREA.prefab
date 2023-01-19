@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPlayer: {fileID: 0}
-  enemyNotDetected: 0
+  enemyDetected: 0
   sizeX: 14
   sizeY: 8
   enemyLayerMask:

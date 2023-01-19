@@ -34,15 +34,22 @@ public class CameraFollow : MonoBehaviour
             return;
         }
 
+        
+
         Vector3 followingPosition = playerTransform.position + offset;
 
-        float minX = cameraBounds.transform.position.x - cameraBounds.size.x / 2 + cameraDimension.x;
-        float maxX = cameraBounds.transform.position.x + cameraBounds.size.x / 2 - cameraDimension.x;
+        float minX = cameraBounds.bounds.min.x + cameraDimension.x;
+        //float minX = cameraBounds.transform.position.x - cameraBounds.size.x / 2f - cameraDimension.x;
+        float maxX = cameraBounds.transform.position.x + cameraBounds.size.x / 2f + cameraDimension.x;
         followingPosition.x = Mathf.Clamp(followingPosition.x, minX, maxX);
 
-        float minY = cameraBounds.transform.position.y - cameraBounds.size.y / 2 + cameraDimension.y;
-        float maxY = cameraBounds.transform.position.y + cameraBounds.size.y / 2 - cameraDimension.y;
-        followingPosition.y = Mathf.Clamp(followingPosition.y, minY, maxY);
+        Debug.Log(minX);
+
+        //float minY = cameraBounds.transform.position.y - cameraBounds.size.y / 2 + cameraDimension.y;
+        //float maxY = cameraBounds.transform.position.y + cameraBounds.size.y / 2 - cameraDimension.y;
+        //followingPosition.y = Mathf.Clamp(followingPosition.y, minY, maxY);
+
+        followingPosition.y = transform.position.y;
 
         Vector3 currentVelocity = Vector3.zero;
         transform.position = Vector3.SmoothDamp(transform.position, followingPosition, ref currentVelocity, Time.deltaTime * moveSpeed);

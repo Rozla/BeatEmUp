@@ -7,10 +7,11 @@ public class CombatAreaTrigger : MonoBehaviour
 
     [SerializeField] GameObject cameraPlayer;
 
-    [SerializeField] bool enemyNotDetected;
+    [SerializeField] bool enemyDetected;
     bool canOverlap;
 
     Vector2 boxSize;
+    Vector3 fixedPos;
 
     [SerializeField] float sizeX = 5f;
     [SerializeField] float sizeY = 10f;
@@ -26,14 +27,19 @@ public class CombatAreaTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        cameraPlayer.GetComponent<CameraFollow>().canFollow = !enemyNotDetected;
+        fixedPos = new Vector3(transform.position.x, transform.position.y, -10f);
+        cameraPlayer.GetComponent<CameraFollow>().canFollow = !enemyDetected;
 
         if (canOverlap)
         {
-            enemyNotDetected = Physics2D.OverlapBox(transform.position, boxSize, 0f, enemyLayerMask);
-
+            enemyDetected = Physics2D.OverlapBox(transform.position, boxSize, 0f, enemyLayerMask);
+            
         }
 
+        if (enemyDetected)
+        {
+            cameraPlayer.transform.position = fixedPos;
+        }
     }
 
     private void OnDrawGizmosSelected()
