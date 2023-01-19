@@ -5,8 +5,7 @@ using UnityEngine;
 public class Enemy04Behavior : MonoBehaviour
 {
     [SerializeField] EnemyState currentState;
-    [SerializeField] Rigidbody2D rb2d;
-    [SerializeField] SpriteRenderer srEnemy;
+    Rigidbody2D rb2d;
     [SerializeField] float enemySpeed = 3f;
     [SerializeField] Animator enemyAnimator;
     [SerializeField] float overlapRadius = 2.5f;
@@ -31,8 +30,10 @@ public class Enemy04Behavior : MonoBehaviour
     public bool isDead;
     public bool isHurt;
 
+    bool canDetect = true;
 
-    public enum EnemyState { 
+    public enum EnemyState
+    {
         IDLE,
         WALK,
         HURT,
@@ -45,7 +46,6 @@ public class Enemy04Behavior : MonoBehaviour
     {
         currentState = EnemyState.IDLE;
         rb2d = GetComponent<Rigidbody2D>();
-        srEnemy = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -61,32 +61,39 @@ public class Enemy04Behavior : MonoBehaviour
 
         OnStateUpdate();
 
-        PlayerDetection();
+        if(canDetect)
+        {
+            PlayerDetection();
+        }
+
+
 
         currentDist = Vector2.Distance(transform.position, playerTransform.position);
         playerOnRange = currentDist <= playerDist;
         enemyAnimator.SetInteger("ATTACKCOUNT", attackCount);
 
 
-        if (isHurt && GetComponent<Enemy04Health>().currentHealth >= 10f)
+        if (isHurt)
         {
+            canDetect = false;
             StartCoroutine(IsHurt());
         }
 
         if (isDead)
         {
+            canDetect = false;
             StartCoroutine(IsDead());
         }
     }
 
     IEnumerator Attack()
     {
-        
+        canDetect = false;
         yield return new WaitForSeconds(.75f);
         enemyAnimator.SetTrigger("ATTACK");
         yield return new WaitForSeconds(.2f);
 
-        if(attackCount == 0)
+        if (attackCount == 0)
         {
             attackCount = 1;
         }
@@ -97,18 +104,20 @@ public class Enemy04Behavior : MonoBehaviour
 
         Debug.Log("Coup de poing");
         isAttacking = false;
+        canDetect = true;
         TransitionToState(EnemyState.IDLE);
-        
+
     }
 
     IEnumerator IsHurt()
-    {
+    { 
         rb2d.velocity = Vector3.zero;
         isHurt = false;
         TransitionToState(EnemyState.HURT);
         enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
         yield return new WaitForSeconds(.5f);
         enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+        canDetect = true;
         TransitionToState(EnemyState.IDLE);
     }
 
@@ -118,13 +127,14 @@ public class Enemy04Behavior : MonoBehaviour
         isDead = false;
         TransitionToState(EnemyState.DEAD);
         yield return new WaitForSeconds(.2f);
-        enemySR.gameObject.SetActive(false);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 0);
         yield return new WaitForSeconds(.2f);
-        enemySR.gameObject.SetActive(true);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
         yield return new WaitForSeconds(.2f);
-        enemySR.gameObject.SetActive(false);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 0);
         yield return new WaitForSeconds(.2f);
-        enemySR.gameObject.SetActive(true);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+        yield return new WaitForSeconds(.2f);
         Destroy(gameObject);
     }
     private void PlayerDetection()
@@ -180,16 +190,16 @@ public class Enemy04Behavior : MonoBehaviour
         {
             case EnemyState.IDLE:
 
-                if (playerDetected && !playerOnRange && !isAttacking)
+                if (playerDetected && !playerOnRange && !isAttacking && !isHurt && !isDead)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
 
-                if(playerDetected && playerOnRange)
+                if (playerDetected && playerOnRange)
                 {
                     TransitionToState(EnemyState.ATTACK);
                 }
-                  
+
 
                 break;
             case EnemyState.WALK:
@@ -204,7 +214,7 @@ public class Enemy04Behavior : MonoBehaviour
                 {
                     TransitionToState(EnemyState.ATTACK);
                 }
-                
+
 
                 break;
             case EnemyState.HURT:
@@ -241,11 +251,11 @@ public class Enemy04Behavior : MonoBehaviour
     }
 
     void TransitionToState(EnemyState nextState)
-        {
-            OnStateExit();
-            currentState = nextState;
-            OnStateEnter();
-        }
+    {
+        OnStateExit();
+        currentState = nextState;
+        OnStateEnter();
+    }
 
     private void OnDrawGizmosSelected()
     {
