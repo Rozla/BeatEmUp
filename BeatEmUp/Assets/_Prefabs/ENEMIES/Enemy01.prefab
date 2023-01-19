@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6957958757494212454}
   - component: {fileID: 6957958757494212455}
   - component: {fileID: 6957958757494212459}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy01
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6957958757494212448}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.04, y: -0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -109,6 +109,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 0
   maxHealth: 50
+  animator: {fileID: 0}
+  lootRecordPrefab: {fileID: 0}
+  spawnRadius: 1.5
 --- !u!1 &6957958757609216678
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +123,7 @@ GameObject:
   - component: {fileID: 6957958757609216677}
   - component: {fileID: 6957958757609216683}
   - component: {fileID: 6957958757609216676}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ShadowEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +228,7 @@ GameObject:
   - component: {fileID: 6957958759260236135}
   - component: {fileID: 6957958759260236133}
   - component: {fileID: 6957958759260236134}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Graphics_Enemy01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6957958759376798826}
   - component: {fileID: 6957958759376798825}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlayerDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}

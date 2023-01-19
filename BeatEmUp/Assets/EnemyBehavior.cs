@@ -22,6 +22,9 @@ public class EnemyBehavior : MonoBehaviour
     public bool right, isOnRange;
 
     Vector2 enemyDir;
+
+    
+
     public enum EnemyState
     {
         IDLE,

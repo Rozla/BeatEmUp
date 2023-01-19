@@ -12,7 +12,13 @@ public class Enemy04Behavior : MonoBehaviour
     [SerializeField] float overlapRadius = 2.5f;
     [SerializeField] LayerMask overlapLayerMask;
     [SerializeField] GameObject enemyGraphics;
+    [SerializeField] Transform playerTransform;
+    [SerializeField] SpriteRenderer enemySR;
 
+    float playerDist = 1f;
+    float currentDist;
+
+    int attackCount = 0;
 
     Vector2 dirEnemy;
 
@@ -20,6 +26,10 @@ public class Enemy04Behavior : MonoBehaviour
     [SerializeField] bool playerOnRange;
 
     bool isRight;
+    bool isAttacking;
+
+    public bool isDead;
+    public bool isHurt;
 
 
     public enum EnemyState { 
@@ -53,19 +63,70 @@ public class Enemy04Behavior : MonoBehaviour
 
         PlayerDetection();
 
+        currentDist = Vector2.Distance(transform.position, playerTransform.position);
+        playerOnRange = currentDist <= playerDist;
+        enemyAnimator.SetInteger("ATTACKCOUNT", attackCount);
 
 
+        if (isHurt && GetComponent<Enemy04Health>().currentHealth >= 10f)
+        {
+            StartCoroutine(IsHurt());
+        }
+
+        if (isDead)
+        {
+            StartCoroutine(IsDead());
+        }
     }
 
     IEnumerator Attack()
     {
         
+        yield return new WaitForSeconds(.75f);
+        enemyAnimator.SetTrigger("ATTACK");
+        yield return new WaitForSeconds(.2f);
+
+        if(attackCount == 0)
+        {
+            attackCount = 1;
+        }
+        else
+        {
+            attackCount = 0;
+        }
+
+        Debug.Log("Coup de poing");
+        isAttacking = false;
         TransitionToState(EnemyState.IDLE);
-        yield return new WaitForSeconds(1f);
-        TransitionToState(EnemyState.ATTACK);
-        playerOnRange = false;
+        
     }
 
+    IEnumerator IsHurt()
+    {
+        rb2d.velocity = Vector3.zero;
+        isHurt = false;
+        TransitionToState(EnemyState.HURT);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
+        yield return new WaitForSeconds(.5f);
+        enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+        TransitionToState(EnemyState.IDLE);
+    }
+
+    IEnumerator IsDead()
+    {
+        rb2d.velocity = Vector2.zero;
+        isDead = false;
+        TransitionToState(EnemyState.DEAD);
+        yield return new WaitForSeconds(.2f);
+        enemySR.gameObject.SetActive(false);
+        yield return new WaitForSeconds(.2f);
+        enemySR.gameObject.SetActive(true);
+        yield return new WaitForSeconds(.2f);
+        enemySR.gameObject.SetActive(false);
+        yield return new WaitForSeconds(.2f);
+        enemySR.gameObject.SetActive(true);
+        Destroy(gameObject);
+    }
     private void PlayerDetection()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, overlapRadius, overlapLayerMask);
@@ -98,11 +159,15 @@ public class Enemy04Behavior : MonoBehaviour
                 enemyAnimator.SetBool("ISWALKING", true);
                 break;
             case EnemyState.HURT:
+                enemyAnimator.SetTrigger("HURT");
                 break;
             case EnemyState.ATTACK:
-                enemyAnimator.SetTrigger("ATTACK");
+                rb2d.velocity = Vector2.zero;
+                isAttacking = true;
+                StartCoroutine(Attack());
                 break;
             case EnemyState.DEAD:
+                enemyAnimator.SetTrigger("DEAD");
                 break;
             default:
                 break;
@@ -115,26 +180,41 @@ public class Enemy04Behavior : MonoBehaviour
         {
             case EnemyState.IDLE:
 
-                if (playerDetected && !playerOnRange)
+                if (playerDetected && !playerOnRange && !isAttacking)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
+
+                if(playerDetected && playerOnRange)
+                {
+                    TransitionToState(EnemyState.ATTACK);
+                }
+                  
 
                 break;
             case EnemyState.WALK:
                 rb2d.velocity = dirEnemy.normalized * enemySpeed;
 
-                if (!playerDetected)
+                if (!playerDetected || playerOnRange)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
 
+                if (isAttacking)
+                {
+                    TransitionToState(EnemyState.ATTACK);
+                }
+                
+
                 break;
             case EnemyState.HURT:
+                rb2d.velocity = Vector2.zero;
                 break;
             case EnemyState.ATTACK:
+                rb2d.velocity = Vector2.zero;
                 break;
             case EnemyState.DEAD:
+                rb2d.velocity = Vector2.zero;
                 break;
             default:
                 break;
@@ -173,12 +253,5 @@ public class Enemy04Behavior : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, overlapRadius);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.tag == "Player")
-        {
-            playerOnRange = true;
-            StartCoroutine(Attack());
-        }
-    }
+
 }

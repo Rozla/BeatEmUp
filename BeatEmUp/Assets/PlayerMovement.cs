@@ -120,10 +120,6 @@ public class PlayerMovement : MonoBehaviour
 
         AttackCombo();
 
-        if (Input.GetKeyDown("w"))
-        {
-            Instantiate(record, transform.position, transform.rotation);
-        }
 
         if (isDead)
         {
@@ -599,20 +595,20 @@ public class PlayerMovement : MonoBehaviour
         TransitionToState(PlayerState.IDLE);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.tag == "Enemy" && !isInvincible)
-        {
-            GetComponent<PlayerHealth>().TakeDamage();
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(collision.gameObject.tag == "Enemy" && !isInvincible)
+    //    {
+    //        GetComponent<PlayerHealth>().TakeDamage();
+    //    }
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Enemy" && !isInvincible)
         {
             
-            GetComponent<PlayerHealth>().TakeDamage();
+            //GetComponent<PlayerHealth>().TakeDamage();
 
             // Get the contact point of the collision
             ContactPoint2D contact = collision.GetContact(0);

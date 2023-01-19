@@ -335,9 +335,10 @@ GameObject:
   - component: {fileID: 1353261348}
   - component: {fileID: 1353261349}
   - component: {fileID: 1353261350}
+  - component: {fileID: 1353261351}
   m_Layer: 8
   m_Name: ENEMY04
-  m_TagString: Enemy
+  m_TagString: Enemy04
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -392,8 +393,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.039664507, y: 0.52687335}
-  m_Size: {x: 0.64613247, y: 1.2135282}
+  m_Offset: {x: -0.039664507, y: 0.33549854}
+  m_Size: {x: 0.64613247, y: 0.83077854}
   m_Direction: 0
 --- !u!114 &1353261350
 MonoBehaviour:
@@ -417,8 +418,25 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   enemyGraphics: {fileID: 653705594}
+  playerTransform: {fileID: 159313437}
+  enemySR: {fileID: 653705597}
   playerDetected: 0
   playerOnRange: 0
+  isDead: 0
+  isHurt: 0
+--- !u!114 &1353261351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353261346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc516b0ee4af2840ad74483f2189fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 0
 --- !u!1001 &1360397848
 PrefabInstance:
   m_ObjectHideFlags: 0

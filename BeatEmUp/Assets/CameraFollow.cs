@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] float moveSpeed = 10f;
     [SerializeField] Vector3 offset = Vector3.zero;
     [SerializeField] BoxCollider2D cameraBounds;
-    [SerializeField] bool canFollow;
+    [SerializeField] public bool canFollow;
 
     Camera mainCamera;
     Vector2 cameraDimension;
