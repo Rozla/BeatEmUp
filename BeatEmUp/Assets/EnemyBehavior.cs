@@ -12,6 +12,7 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] GameObject graphics;
     [SerializeField] float playerDist = 1f;
     float currentHealth, maxHealth;
+    int attackCount = 0;
 
     Coroutine attackCoroutine;
 
@@ -19,11 +20,11 @@ public class EnemyBehavior : MonoBehaviour
 
     public Transform player;
 
-    public bool right, isOnRange;
+    public bool right, isOnRange, playerDetected;
 
     Vector2 enemyDir;
 
-    
+
 
     public enum EnemyState
     {
@@ -47,7 +48,7 @@ public class EnemyBehavior : MonoBehaviour
         OnStateEnter();
         rb2d = GetComponent<Rigidbody2D>();
 
-        attackCoroutine = StartCoroutine(Attack());
+       // attackCoroutine = StartCoroutine(Attack());
 
     }
 
@@ -61,12 +62,12 @@ public class EnemyBehavior : MonoBehaviour
             right = enemyDir.x > 0;
             graphics.transform.rotation = right ? Quaternion.identity : Quaternion.Euler(0, 180f, 0);
         }
-        if (isOnRange)
+        if (!isOnRange && !playerDetected)
         {
-            StartCoroutine(Attack());
+            StopCoroutine(Attack());
         }
+
        
-        //float enemyCurrentHealth = enemyHealthScript.currentHealth;
 
     }
 
@@ -76,38 +77,20 @@ public class EnemyBehavior : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.IDLE:
-                animator.SetBool("IsIdle", true);
-                animator.SetBool("WALK_ENEMY01", false);
+                animator.SetBool("ISWALKING", false);
                 rb2d.velocity = Vector2.zero;
-
                 break;
             case EnemyState.WALK:
-                if (enemyDir.magnitude != 0)
-                {
-                    animator.SetBool("WALK_ENEMY01", true);
-                    animator.SetBool("IsIdle", false);
-                }
-
+                animator.SetBool("ISWALKING", true);
                 break;
             case EnemyState.ATTACK01:
-                animator.SetTrigger("IsAttacking");
-                animator.SetBool("IsIdle", false);
-                animator.SetBool("WALK_ENEMY01", false);
+                animator.SetTrigger("ATTACK");
                 break;
-
-            case EnemyState.ATTACK02:
-                animator.SetTrigger("IsAttacking02");
-                animator.SetBool("IsIdle", false);
-                animator.SetBool("WALK_ENEMY01", false);
-                break;
-
             case EnemyState.HURT:
                 animator.SetTrigger("HURT");
-                animator.SetBool("IsIdle", false);
-                animator.SetBool("WALK_ENEMY01", false);
                 break;
             case EnemyState.DEAD:
-                animator.SetTrigger("IsDead");
+                animator.SetTrigger("DEAD");
                 break;
             default:
                 break;
@@ -122,7 +105,7 @@ public class EnemyBehavior : MonoBehaviour
                 if (Vector2.Distance(transform.position, player.position) <= playerDist)
                 {
                     isOnRange = true;
-
+                    StartCoroutine(Attack());
                 }
                 if (Vector2.Distance(transform.position, player.position) > playerDist)
                 {
@@ -133,11 +116,8 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     TransitionToState(EnemyState.WALK);
                 }
-
-                // if la vie de l'ennemie descend 
-                // TransitionToState(EnemyState.HURT);
-                // SI LA VIE DE MON ENNEMIE EST A ZERO 
-                //TransitionToState(EnemyState.DEAD);
+                if (currentHealth <= 0)
+                    TransitionToState(EnemyState.DEAD);
 
                 break;
             case EnemyState.WALK:
@@ -148,18 +128,15 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     isOnRange = true;
                     TransitionToState(EnemyState.IDLE);
-
                 }
 
                 if (enemyDir == Vector2.zero)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
+                if (currentHealth <= 0)
+                    TransitionToState(EnemyState.DEAD);
 
-                // if la vie de l'ennemie descend 
-                //TransitionToState(EnemyState.HURT);
-                // SI LA VIE DE MON ENNEMIE EST A ZERO 
-                //TransitionToState(EnemyState.DEAD);
 
                 break;
             case EnemyState.ATTACK01:
@@ -174,35 +151,19 @@ public class EnemyBehavior : MonoBehaviour
                 }
 
                 break;
-            case EnemyState.ATTACK02:
-                if (enemyDir != Vector2.zero)
-                {
-                    TransitionToState(EnemyState.WALK);
-                }
-                if (enemyDir == Vector2.zero)
-                {
-                    TransitionToState(EnemyState.IDLE);
-                }
-                break;
-            // if la vie de l'ennemie descend 
-            // TransitionToState(EnemyState.HURT);
-            // SI LA VIE DE MON ENNEMIE EST A ZERO 
-            //TransitionToState(EnemyState.DEAD);
-
+           
             case EnemyState.HURT:
                 if (!isOnRange && enemyDir != Vector2.zero)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
-                if (enemyDir == Vector2.zero)
+                if (enemyDir == Vector2.zero && !playerDetected && !isOnRange)
                 {
                     TransitionToState(EnemyState.IDLE);
                 }
-                
+                if (currentHealth <= 0)
+                    TransitionToState(EnemyState.DEAD);
                 break;
-            // SI LA VIE DE MON ENNEMIE EST A ZERO 
-            //TransitionToState(EnemyState.DEAD);
-
             case EnemyState.DEAD:
 
             default:
@@ -215,20 +176,12 @@ public class EnemyBehavior : MonoBehaviour
         {
             case EnemyState.IDLE:
                 break;
-
             case EnemyState.WALK:
-                //if (enemyDir.magnitude != 0)
-                //{
-                //    animator.SetBool("WALK_ENEMY01", false);
-                //}
                 break;
             case EnemyState.ATTACK01:
-
                 break;
             case EnemyState.ATTACK02:
-
                 break;
-
             case EnemyState.DEAD:
                 break;
             case EnemyState.HURT:
@@ -249,7 +202,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-           // Vector3.MoveTowards(transform.position - player.position * walkEnemySpeed * Time.deltaTime);
+            playerDetected = true;
             enemyDir = new Vector2(player.position.x - transform.position.x, player.position.y - transform.position.y) * walkEnemySpeed;
         }
 
@@ -258,23 +211,27 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            playerDetected = false;
             enemyDir = Vector2.zero;
         }
 
     }
     IEnumerator Attack()
     {
-       
-        animator.SetBool("IsIdle", true);
-        yield return new WaitForSeconds(1);
-        animator.SetBool("IsIdle", false);
-       // TransitionToState(EnemyState.ATTACK01);
-        animator.SetTrigger("IsAttacking");
-        animator.SetTrigger("IsAttacking02");
-        yield return new WaitForSeconds(1);
+
+        rb2d.velocity = Vector2.zero;
+        yield return new WaitForSeconds(.75f);      
+        animator.SetTrigger("ATTACK");
+        yield return new WaitForSeconds(.25f);
+        if (attackCount == 0)
+        {
+            attackCount = 1;
+        }
+        else
+        {
+            attackCount = 0;
+        }
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
-
-
     }
 
 }
