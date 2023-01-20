@@ -124,7 +124,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4629140765073166471}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8ae518f5e3faf242b9ddddb528421e2, type: 3}
   m_Name: 
@@ -132,5 +132,5 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   moveSpeed: 10
   offset: {x: 0, y: 0, z: -10}
-  cameraBounds: {fileID: 8036046640010385500, guid: 56fbcc36811e080419a9b3611647f104, type: 3}
+  cameraBounds: {fileID: 0}
   canFollow: 1
