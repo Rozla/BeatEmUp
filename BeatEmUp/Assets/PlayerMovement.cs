@@ -151,7 +151,6 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
 
-
         //SI LE TIMER DE SAUT EST INFERIEUR AU TIMER DE DUREE, ET QUE LE JOUEUR EST EN COURS DE SAUT
         if (jumpTimer < jumpDuration && isJumping)
         {
@@ -568,6 +567,7 @@ public class PlayerMovement : MonoBehaviour
         isResetting = false;
 
     }
+
     IEnumerator AttackCD()
     {
         yield return new WaitForSeconds(.3f);

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 27e099aa487cc7e48a204dc510cf80eb
+guid: 7ae69368bcbf1ef49a5ead596d263f0d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,148 +117,241 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_0
+      name: 86_Assets_STREET_LIGHT_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -60, y: 75.5}
+        - {x: -60, y: -44.5}
+        - {x: -41, y: -44.5}
+        - {x: -13, y: 38.5}
+        - {x: -13, y: 53.5}
+        - {x: -41, y: 76.5}
       tessellationDetail: 0
       bones: []
-      spriteID: a3357225e0fd9d8489bb7e7288a15918
-      internalID: -1252583732
+      spriteID: 440c1805957c4674dbcb3b2beb70e0da
+      internalID: 1321986394
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_1
+      name: 86_Assets_STREET_LIGHT_1
       rect:
         serializedVersion: 2
-        x: 48
+        x: 130
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -60, y: 75.5}
+        - {x: -60, y: -44.5}
+        - {x: -41, y: -44.5}
+        - {x: -13, y: 38.5}
+        - {x: -13, y: 53.5}
+        - {x: -41, y: 76.5}
       tessellationDetail: 0
       bones: []
-      spriteID: e55f96ac4d12755499b6ee423043e73d
-      internalID: 592909140
+      spriteID: c82f69a4531ad8a4b920f49b59810f35
+      internalID: -587289565
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_2
+      name: 86_Assets_STREET_LIGHT_2
       rect:
         serializedVersion: 2
-        x: 96
+        x: 260
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -60, y: 75.5}
+        - {x: -60, y: -44.5}
+        - {x: -41, y: -44.5}
+        - {x: -13, y: 38.5}
+        - {x: -13, y: 53.5}
+        - {x: -41, y: 76.5}
       tessellationDetail: 0
       bones: []
-      spriteID: 85ac14d5fe5090c4b993ee7fc6104912
-      internalID: -599796324
+      spriteID: e81be25d59abe864684e91c3565c8063
+      internalID: 732912296
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_3
+      name: 86_Assets_STREET_LIGHT_3
       rect:
         serializedVersion: 2
-        x: 144
+        x: 390
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -60, y: 75.5}
+        - {x: -60, y: -44.5}
+        - {x: -41, y: -44.5}
+        - {x: -13, y: 38.5}
+        - {x: -13, y: 53.5}
+        - {x: -41, y: 76.5}
       tessellationDetail: 0
       bones: []
-      spriteID: d7638583edb03b24d8be14c5127e9667
-      internalID: -617963137
+      spriteID: 4ba72699aee5e1c46988d95ba138891f
+      internalID: -146483590
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_4
+      name: 86_Assets_STREET_LIGHT_4
       rect:
         serializedVersion: 2
-        x: 192
+        x: 520
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -60, y: 75.5}
+        - {x: -60, y: -44.5}
+        - {x: -41, y: -44.5}
+        - {x: -13, y: 38.5}
+        - {x: -13, y: 53.5}
+        - {x: -41, y: 76.5}
       tessellationDetail: 0
       bones: []
-      spriteID: b23ecc5fceaeffd4c90c868ef2b6c5e6
-      internalID: -607010928
+      spriteID: ce10948f21bda244ea2fc18e5a081835
+      internalID: -517727747
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_5
+      name: 86_Assets_STREET_LIGHT_5
       rect:
         serializedVersion: 2
-        x: 240
+        x: 650
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4db1737ee2fc041468d1d2dd4139fd56
-      internalID: 387247360
+      spriteID: 919ef12ea83a34041a404b6e1fd32da3
+      internalID: -2077814965
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 137_Assets_HYDRANT_6
+      name: 86_Assets_STREET_LIGHT_6
       rect:
         serializedVersion: 2
-        x: 288
+        x: 780
         y: 0
-        width: 48
-        height: 48
+        width: 130
+        height: 153
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5602b895c45b5eb4a9335db509f86ffa
-      internalID: 913246183
+      spriteID: 2a30f357e64c40b4d9e08058869840cf
+      internalID: -840597523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 86_Assets_STREET_LIGHT_7
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 0
+        width: 130
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3988823ee2af1504d96e2457b1bed6af
+      internalID: 1969209123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 86_Assets_STREET_LIGHT_8
+      rect:
+        serializedVersion: 2
+        x: 1040
+        y: 0
+        width: 130
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e041443c720753f44bb2e31930f35efd
+      internalID: -1573021738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 86_Assets_STREET_LIGHT_9
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 0
+        width: 130
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bd2e10f00493f44a8be1b89c5c1a80e
+      internalID: 1768143475
       vertices: []
       indices: 
       edges: []
@@ -274,13 +367,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      137_Assets_HYDRANT_6: 913246183
-      137_Assets_HYDRANT_0: -1252583732
-      137_Assets_HYDRANT_5: 387247360
-      137_Assets_HYDRANT_2: -599796324
-      137_Assets_HYDRANT_3: -617963137
-      137_Assets_HYDRANT_4: -607010928
-      137_Assets_HYDRANT_1: 592909140
+      86_Assets_STREET_LIGHT_0: 1321986394
+      86_Assets_STREET_LIGHT_3: -146483590
+      86_Assets_STREET_LIGHT_6: -840597523
+      86_Assets_STREET_LIGHT_7: 1969209123
+      86_Assets_STREET_LIGHT_2: 732912296
+      86_Assets_STREET_LIGHT_8: -1573021738
+      86_Assets_STREET_LIGHT_1: -587289565
+      86_Assets_STREET_LIGHT_4: -517727747
+      86_Assets_STREET_LIGHT_9: 1768143475
+      86_Assets_STREET_LIGHT_5: -2077814965
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

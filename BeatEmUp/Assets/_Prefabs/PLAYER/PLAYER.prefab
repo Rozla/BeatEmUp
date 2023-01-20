@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 517835107}
   m_Layer: 3
   m_Name: Punch_Collider
-  m_TagString: Untagged
+  m_TagString: PLAYERHIT
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

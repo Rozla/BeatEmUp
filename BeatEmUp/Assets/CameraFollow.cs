@@ -9,10 +9,12 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] Vector3 offset = Vector3.zero;
     [SerializeField] BoxCollider2D cameraBounds;
     [SerializeField] public bool canFollow;
+    [SerializeField] GameObject redArrow;
+
 
     Camera mainCamera;
     Vector2 cameraDimension;
-
+    float t;
 
     private void Awake()
     {
@@ -31,19 +33,22 @@ public class CameraFollow : MonoBehaviour
     {
         if (!canFollow)
         {
+            t = 0;
             return;
         }
 
-        
+        t += Time.deltaTime;
+
+        redArrow.gameObject.SetActive(t > 0.1f && t < 5f);
+
 
         Vector3 followingPosition = playerTransform.position + offset;
 
-        float minX = cameraBounds.bounds.min.x + cameraDimension.x;
-        //float minX = cameraBounds.transform.position.x - cameraBounds.size.x / 2f - cameraDimension.x;
-        float maxX = cameraBounds.transform.position.x + cameraBounds.size.x / 2f + cameraDimension.x;
+        //float minX = cameraBounds.bounds.min.x + cameraDimension.x;
+        float minX = cameraBounds.transform.position.x - cameraBounds.size.x / 2f + cameraDimension.x;
+        float maxX = cameraBounds.transform.position.x + cameraBounds.size.x / 2f - cameraDimension.x;
         followingPosition.x = Mathf.Clamp(followingPosition.x, minX, maxX);
 
-        Debug.Log(minX);
 
         //float minY = cameraBounds.transform.position.y - cameraBounds.size.y / 2 + cameraDimension.y;
         //float maxY = cameraBounds.transform.position.y + cameraBounds.size.y / 2 - cameraDimension.y;
