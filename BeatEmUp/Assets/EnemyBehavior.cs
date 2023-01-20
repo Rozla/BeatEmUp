@@ -234,5 +234,10 @@ public class EnemyBehavior : MonoBehaviour
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Destroy(collision.transform.parent.gameObject);
+    }
+
 }
 
