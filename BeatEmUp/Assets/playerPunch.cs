@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class playerPunch : MonoBehaviour
 {
+    [SerializeField] GameObject player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,11 +22,13 @@ public class playerPunch : MonoBehaviour
     {
         if(collision.gameObject.tag == "Boss")
         {
+            player.GetComponent<PlayerStamina>().TakeStamina();
             collision.gameObject.GetComponent<BossHealth>().TakeDamage();
         }
 
         if (collision.gameObject.tag == "Enemy")
         {
+            player.GetComponent<PlayerStamina>().TakeStamina();
             collision.gameObject.GetComponent<EnnemyHealth>().TakeDamage();
         }
 
@@ -35,6 +39,7 @@ public class playerPunch : MonoBehaviour
 
         if (collision.gameObject.tag == "Enemy04")
         {
+            player.GetComponent<PlayerStamina>().TakeStamina();
             collision.gameObject.GetComponent<Enemy04Health>().TakeDamage();
         }
 

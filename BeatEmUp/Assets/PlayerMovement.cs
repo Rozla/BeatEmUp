@@ -46,6 +46,9 @@ public class PlayerMovement : MonoBehaviour
     bool isAttacking;
     bool isResetting;
 
+    float specialTimer = 0f;
+    bool specialAttackOn;
+
 
     [Header("Particles Settings")]
     [SerializeField] GameObject dustJumpParticles;
@@ -78,7 +81,8 @@ public class PlayerMovement : MonoBehaviour
         JUMPDOWN,
         JUMPLAND,
         HURT,
-        DEAD
+        DEAD,
+        SPECIALATTACK
     }
 
 
@@ -131,8 +135,16 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(IsHurt());
         }
 
-        
-        
+        if (Input.GetButton("SpecialAttack"))
+        {
+            specialTimer += Time.deltaTime;
+
+            if(specialTimer > 1f)
+            {
+                specialAttackOn = true;
+            }
+        }
+
     }
 
     private void AttackCombo()
@@ -249,6 +261,9 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetTrigger("DEAD");
 
                 break;
+            case PlayerState.SPECIALATTACK:
+                StartCoroutine(SpecialAttack());
+                break;
             default:
                 break;
         }
@@ -279,6 +294,11 @@ public class PlayerMovement : MonoBehaviour
                 if (jumpInput && !isJumping)
                 {
                     TransitionToState(PlayerState.JUMPUP);
+                }
+
+                if(GetComponent<PlayerStamina>().currentStamina == GetComponent<PlayerStamina>().maxStamina && specialAttackOn)
+                {
+                    TransitionToState(PlayerState.SPECIALATTACK);
                 }
 
                 break;
@@ -373,10 +393,21 @@ public class PlayerMovement : MonoBehaviour
             case PlayerState.DEAD:
 
                 break;
-
+            case PlayerState.SPECIALATTACK:
+                break;
             default:
                 break;
         }
+    }
+
+    IEnumerator SpecialAttack()
+    {
+        animator.SetTrigger("SPECIALATTACK");
+        specialTimer = 0f;
+        specialAttackOn = false;
+        GetComponent<PlayerStamina>().currentStamina = 0f;
+        yield return new WaitForSeconds(1f);
+        TransitionToState(PlayerState.IDLE);
     }
 
     IEnumerator LoseLife()
@@ -445,6 +476,8 @@ public class PlayerMovement : MonoBehaviour
                 graphicsSR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
                 break;
             case PlayerState.DEAD:
+                break;
+            case PlayerState.SPECIALATTACK:
                 break;
             default:
                 break;

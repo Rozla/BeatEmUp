@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class PlayerStamina : MonoBehaviour
 {
 
-    [SerializeField] float maxStamina = 100f;
-    [SerializeField] float currentStamina;
+    [SerializeField] public float maxStamina = 100f;
+    [SerializeField] public float currentStamina;
     [SerializeField] Slider staminaSlider;
 
     // Start is called before the first frame update
