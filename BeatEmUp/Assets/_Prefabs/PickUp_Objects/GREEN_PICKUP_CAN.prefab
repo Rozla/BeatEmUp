@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6902165215319239428}
   - component: {fileID: 8049335191992146413}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SHADOW
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 8680399586202550525}
   - component: {fileID: 8680399586202550522}
   - component: {fileID: 8680399586202550523}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GREEN_PICKUP_CAN
   m_TagString: PICKUP
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1 &8680399586698962010
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8680399586698962013}
   - component: {fileID: 8680399586698962012}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GRAPHICS
   m_TagString: Untagged
   m_Icon: {fileID: 0}

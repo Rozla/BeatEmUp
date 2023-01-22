@@ -61,11 +61,10 @@ public class Enemy04Behavior : MonoBehaviour
 
         OnStateUpdate();
 
-        if(canDetect)
+        if (canDetect)
         {
             PlayerDetection();
         }
-
 
 
         currentDist = Vector2.Distance(transform.position, playerTransform.position);
@@ -93,6 +92,11 @@ public class Enemy04Behavior : MonoBehaviour
         enemyAnimator.SetTrigger("ATTACK");
         yield return new WaitForSeconds(.2f);
 
+        Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
+
+        collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+
+
         if (attackCount == 0)
         {
             attackCount = 1;
@@ -110,7 +114,7 @@ public class Enemy04Behavior : MonoBehaviour
     }
 
     IEnumerator IsHurt()
-    { 
+    {
         rb2d.velocity = Vector3.zero;
         isHurt = false;
         TransitionToState(EnemyState.HURT);

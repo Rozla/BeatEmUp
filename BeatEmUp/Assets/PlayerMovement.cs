@@ -55,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject dustLandParticles;
     [SerializeField] GameObject dustSprintParticles;
     [SerializeField] GameObject punchParticles;
+    [SerializeField] GameObject shockwaveParticles;
     ParticleSystemRenderer psrDustSprint;
 
 
@@ -135,13 +136,17 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(IsHurt());
         }
 
-        if (Input.GetButton("SpecialAttack"))
+        if (Input.GetButton("SpecialAttack") && GetComponent<PlayerStamina>().currentStamina >= GetComponent<PlayerStamina>().maxStamina)
         {
             specialTimer += Time.deltaTime;
 
             if(specialTimer > 1f)
             {
                 specialAttackOn = true;
+            }
+            else if(Input.GetButtonUp("SpecialAttack"))
+            {
+                specialTimer = 0f;
             }
         }
 
@@ -296,7 +301,7 @@ public class PlayerMovement : MonoBehaviour
                     TransitionToState(PlayerState.JUMPUP);
                 }
 
-                if(GetComponent<PlayerStamina>().currentStamina == GetComponent<PlayerStamina>().maxStamina && specialAttackOn)
+                if(specialAttackOn)
                 {
                     TransitionToState(PlayerState.SPECIALATTACK);
                 }
@@ -406,8 +411,12 @@ public class PlayerMovement : MonoBehaviour
         specialTimer = 0f;
         specialAttackOn = false;
         GetComponent<PlayerStamina>().currentStamina = 0f;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.3f);
+        shockwaveParticles.gameObject.SetActive(true);
+        yield return new WaitForSeconds(.7f);
         TransitionToState(PlayerState.IDLE);
+        yield return new WaitForSeconds(1f);
+        shockwaveParticles.gameObject.SetActive(false);
     }
 
     IEnumerator LoseLife()

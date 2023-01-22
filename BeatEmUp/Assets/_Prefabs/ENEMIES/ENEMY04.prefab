@@ -216,4 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc516b0ee4af2840ad74483f2189fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dieCollectPrefabs:
+  - {fileID: 7692110199531569906, guid: b84dc2b15dccc1c46bcdf5a3a234872f, type: 3}
+  - {fileID: 2893781677784138512, guid: 2a46a768d10f2504687114195904917a, type: 3}
   currentHealth: 0

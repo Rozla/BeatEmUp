@@ -21,6 +21,7 @@ public class CanBehavior : MonoBehaviour
     //[HideInInspector]
     public bool isHolded;
 
+    bool collisionEnemy;
 
     Vector2 stopPosition;
 
@@ -75,9 +76,16 @@ public class CanBehavior : MonoBehaviour
             t = 0f;
             rb2d.bodyType = RigidbodyType2D.Kinematic;
             rb2d.velocity = Vector2.zero;
-            //bc2d.isTrigger = false;
+            bc2d.isTrigger = true;
             isHolded = false;
+            inMotion = false;
+            collisionEnemy = false;
 
+        }
+
+        if(inMotion && collisionEnemy)
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x * -1f, rb2d.velocity.y);
         }
 
 
@@ -99,6 +107,16 @@ public class CanBehavior : MonoBehaviour
             rb2d.AddForce(new Vector2(throwDistance * rotationFix, throwForce), ForceMode2D.Impulse);
             transform.parent = null;
             inMotion = true;
+            bc2d.isTrigger = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Enemy04")
+        {
+            collision.gameObject.GetComponent<Enemy04Health>().TakeDamage();
+            collisionEnemy = true;
         }
     }
 }
