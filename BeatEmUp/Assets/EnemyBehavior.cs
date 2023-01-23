@@ -230,18 +230,17 @@ public class EnemyBehavior : MonoBehaviour
         if (attackCount == 0)
         {
             attackCount = 1;
+           
         }
         else
         {
             attackCount = 0;
+            
         }
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Destroy(collision.transform.parent.gameObject);
-    //}
+
 
 }
 
