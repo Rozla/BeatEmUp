@@ -7,17 +7,20 @@ public class EnnemyHealth : MonoBehaviour
     [SerializeField] public float currentHealth, maxHealth = 50f;
     [SerializeField] Animator animator;
     
-    [SerializeField] GameObject lootRecordPrefab;
-    [SerializeField] float spawnRadius = 1.5f;
-    
-    int currentLootCount = 0;
-    int maxLootCount = 3;
+    [SerializeField] GameObject [] lootRecordPrefab;
+    Vector3 offset0;
+    Vector3 offset1;
+    Vector3 offset2;
+    Vector3 offset3;
 
 
     void Start()
     {
         currentHealth = maxHealth;
-       
+        offset0 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
+        offset1 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
+        offset2 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
+        offset3 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
     }
 
     void Update()
@@ -25,13 +28,11 @@ public class EnnemyHealth : MonoBehaviour
         if(currentHealth <= 0 )
         {
             animator.SetTrigger("DEAD");
-           
-            if (currentLootCount < maxLootCount)
-            {
-                Vector2 spawnPosition = (Vector2)transform.position + Random.insideUnitCircle * spawnRadius;
-                Instantiate(lootRecordPrefab, spawnPosition, Quaternion.identity);
-                currentLootCount ++;
-            }
+            Instantiate(lootRecordPrefab[Random.Range(0, lootRecordPrefab.Length)], transform.position + offset0, transform.rotation);
+            Instantiate(lootRecordPrefab[Random.Range(0, lootRecordPrefab.Length)], transform.position + offset1, transform.rotation);
+            Instantiate(lootRecordPrefab[Random.Range(0, lootRecordPrefab.Length)], transform.position + offset2, transform.rotation);
+            Instantiate(lootRecordPrefab[Random.Range(0, lootRecordPrefab.Length)], transform.position + offset3, transform.rotation);
+
             Destroy(gameObject);
 
         }

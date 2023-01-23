@@ -6,7 +6,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] float walkEnemySpeed = 5f;
-
+    [SerializeField] LayerMask overlapLayerMask;
     [SerializeField] EnemyState currentState;
     [SerializeField] Rigidbody2D rb2d;
     [SerializeField] GameObject graphics;
@@ -223,6 +223,10 @@ public class EnemyBehavior : MonoBehaviour
         yield return new WaitForSeconds(.75f);      
         animator.SetTrigger("ATTACK");
         yield return new WaitForSeconds(.25f);
+
+        //Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
+        //collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+
         if (attackCount == 0)
         {
             attackCount = 1;
@@ -234,10 +238,10 @@ public class EnemyBehavior : MonoBehaviour
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Destroy(collision.transform.parent.gameObject);
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Destroy(collision.transform.parent.gameObject);
+    //}
 
 }
 
