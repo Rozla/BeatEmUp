@@ -28,18 +28,20 @@ public class CombatAreaTrigger : MonoBehaviour
     void Update()
     {
         fixedPos = new Vector3(transform.position.x, transform.position.y, -10f);
-        cameraPlayer.GetComponent<CameraFollow>().canFollow = !enemyDetected;
+        
 
         if (canOverlap)
         {
             enemyDetected = Physics2D.OverlapBox(transform.position, boxSize, 0f, enemyLayerMask);
-            
+            cameraPlayer.GetComponent<CameraFollow>().canFollow = !enemyDetected;
         }
 
         if (enemyDetected)
         {
             cameraPlayer.transform.position = fixedPos;
         }
+
+       
     }
 
     private void OnDrawGizmosSelected()
