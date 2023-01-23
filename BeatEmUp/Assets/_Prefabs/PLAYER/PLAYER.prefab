@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 1905584562}
   - component: {fileID: 1905584563}
   - component: {fileID: 517835107}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Punch_Collider
   m_TagString: PLAYERHIT
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 1978918790}
   - component: {fileID: 1978918792}
   - component: {fileID: 1978918791}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Shockwave_Particles_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5053,7 +5053,7 @@ GameObject:
   - component: {fileID: 6312080355415463854}
   - component: {fileID: 1148971694644701282}
   - component: {fileID: 3124707946018389104}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Shockwave_Particles_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29760,7 +29760,7 @@ GameObject:
   - component: {fileID: 7101131008815351106}
   - component: {fileID: 1606185492}
   - component: {fileID: 6670540437085419293}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Shockwave_Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

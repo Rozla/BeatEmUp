@@ -94,7 +94,11 @@ public class Enemy04Behavior : MonoBehaviour
 
         Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
 
-        collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+        if(collision.gameObject != null)
+        {
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+
+        }
 
 
         if (attackCount == 0)

@@ -51,6 +51,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 6957958759260236134}
   walkEnemySpeed: 2
+  overlapLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
   currentState: 0
   rb2d: {fileID: 6957958757494212454}
   graphics: {fileID: 6957958759260236128}
@@ -58,6 +61,7 @@ MonoBehaviour:
   player: {fileID: 0}
   right: 0
   isOnRange: 0
+  playerDetected: 0
 --- !u!50 &6957958757494212454
 Rigidbody2D:
   serializedVersion: 4
@@ -109,9 +113,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 0
   maxHealth: 50
-  animator: {fileID: 0}
-  lootRecordPrefab: {fileID: 0}
-  spawnRadius: 1.5
+  animator: {fileID: 6957958759260236134}
+  lootRecordPrefab:
+  - {fileID: 7692110199531569906, guid: b84dc2b15dccc1c46bcdf5a3a234872f, type: 3}
+  - {fileID: 2893781677784138512, guid: 2a46a768d10f2504687114195904917a, type: 3}
 --- !u!1 &6957958757609216678
 GameObject:
   m_ObjectHideFlags: 0

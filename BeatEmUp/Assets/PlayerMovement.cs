@@ -415,7 +415,7 @@ public class PlayerMovement : MonoBehaviour
         shockwaveParticles.gameObject.SetActive(true);
         yield return new WaitForSeconds(.7f);
         TransitionToState(PlayerState.IDLE);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.1f);
         shockwaveParticles.gameObject.SetActive(false);
     }
 
