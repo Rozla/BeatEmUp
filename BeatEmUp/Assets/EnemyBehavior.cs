@@ -224,8 +224,8 @@ public class EnemyBehavior : MonoBehaviour
         animator.SetTrigger("ATTACK");
         yield return new WaitForSeconds(.25f);
 
-        Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
-        collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+        //Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
+        //collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
 
         if (attackCount == 0)
         {
