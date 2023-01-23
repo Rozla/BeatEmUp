@@ -594,15 +594,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 159313442, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 533965831, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1286296136, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3122250675413081010, guid: 0228226cafd2fa54ca10822ff01b7118, type: 3}
       propertyPath: m_RootOrder
