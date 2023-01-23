@@ -224,24 +224,23 @@ public class EnemyBehavior : MonoBehaviour
         animator.SetTrigger("ATTACK");
         yield return new WaitForSeconds(.25f);
 
-        //Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
-        //collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
+        Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
+        collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
 
         if (attackCount == 0)
         {
             attackCount = 1;
+           
         }
         else
         {
             attackCount = 0;
+            
         }
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Destroy(collision.transform.parent.gameObject);
-    //}
+
 
 }
 
