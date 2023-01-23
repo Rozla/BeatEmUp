@@ -742,6 +742,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6957958757494212453, guid: 8c93286098e8883419302b955af3cffe, type: 3}
+      propertyPath: overlapLayerMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6957958757494212455, guid: 8c93286098e8883419302b955af3cffe, type: 3}
       propertyPath: m_Size.x
       value: 0.570642
@@ -774,6 +778,18 @@ PrefabInstance:
       propertyPath: lootRecordPrefab
       value: 
       objectReference: {fileID: 2893781677784138512, guid: 2a46a768d10f2504687114195904917a, type: 3}
+    - target: {fileID: 6957958757494212459, guid: 8c93286098e8883419302b955af3cffe, type: 3}
+      propertyPath: lootRecordPrefab.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6957958757494212459, guid: 8c93286098e8883419302b955af3cffe, type: 3}
+      propertyPath: lootRecordPrefab.Array.data[0]
+      value: 
+      objectReference: {fileID: 2893781677784138512, guid: 2a46a768d10f2504687114195904917a, type: 3}
+    - target: {fileID: 6957958757494212459, guid: 8c93286098e8883419302b955af3cffe, type: 3}
+      propertyPath: lootRecordPrefab.Array.data[1]
+      value: 
+      objectReference: {fileID: 7692110199531569906, guid: b84dc2b15dccc1c46bcdf5a3a234872f, type: 3}
     - target: {fileID: 6957958757609216678, guid: 8c93286098e8883419302b955af3cffe, type: 3}
       propertyPath: m_Layer
       value: 8
