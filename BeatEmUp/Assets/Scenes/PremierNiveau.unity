@@ -344,17 +344,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1451782321}
     m_Modifications:
-    - target: {fileID: 1986098351360956469, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 1986098351648339204, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
       propertyPath: m_Name
       value: BOSS
-      objectReference: {fileID: 0}
-    - target: {fileID: 1986098351648339204, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1986098351648339205, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
       propertyPath: m_RootOrder
@@ -401,17 +393,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1986098351648339225, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
-      propertyPath: bossSR
-      value: 
-      objectReference: {fileID: 947703489}
-    - target: {fileID: 1986098351648339225, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 883007332}
-    - target: {fileID: 1986098352862183542, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
 --- !u!1 &129389941
@@ -1964,11 +1948,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.44843653, y: 3.640113}
   m_EdgeRadius: 0
---- !u!212 &947703489 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 1986098352862183541, guid: 146fff2b72e793c419f4c0879cb6c660, type: 3}
-  m_PrefabInstance: {fileID: 71734885}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &954307983
 PrefabInstance:
   m_ObjectHideFlags: 0
