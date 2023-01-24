@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 1905584562}
   - component: {fileID: 1905584563}
   - component: {fileID: 517835107}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Punch_Collider
   m_TagString: PLAYERHIT
   m_Icon: {fileID: 0}
@@ -24830,6 +24830,7 @@ MonoBehaviour:
   isHurt: 0
   graphicsSR: {fileID: 3122250674275217155}
   isDead: 0
+  isInvincible: 0
 --- !u!114 &533965831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24889,7 +24890,7 @@ GameObject:
   - component: {fileID: 5644252575060531701}
   m_Layer: 3
   m_Name: Punch_Particles
-  m_TagString: Untagged
+  m_TagString: PLAYERHIT
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
