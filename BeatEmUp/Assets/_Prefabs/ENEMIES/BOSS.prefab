@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1986098351360956426}
   - component: {fileID: 1986098351360956427}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1986098351648339230}
   - component: {fileID: 1986098351648339225}
   - component: {fileID: 1986098351648339228}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BOSS
   m_TagString: Boss
   m_Icon: {fileID: 0}
@@ -192,15 +192,22 @@ MonoBehaviour:
   currentState: 0
   player: {fileID: 0}
   bossGraphics: {fileID: 1986098352862183542}
-  bossSR: {fileID: 0}
+  bossSR: {fileID: 1986098352862183541}
   layerMask:
     serializedVersion: 2
     m_Bits: 0
+  jumpBoss:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   throwForce: 10
   NombreDeSec: 2
   isDead: 0
   pickUpObjectDetected: 0
   overlapRadius: 2.5
+  jumpDuration: 1
   playerOnRange: 0
   jumpForce: 6
 --- !u!114 &1986098351648339228
@@ -217,7 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   currentHealth: 0
-  animator: {fileID: 0}
+  animator: {fileID: 1986098352862183540}
   isHurt: 0
 --- !u!1 &1986098352862183542
 GameObject:
@@ -230,7 +237,7 @@ GameObject:
   - component: {fileID: 1986098352862183543}
   - component: {fileID: 1986098352862183541}
   - component: {fileID: 1986098352862183540}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GRAPHICS
   m_TagString: Untagged
   m_Icon: {fileID: 0}

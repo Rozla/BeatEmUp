@@ -234,6 +234,7 @@ public class BossMovement : MonoBehaviour
 
                 break;
             case BossState.DEATH:
+                rb2d.velocity = Vector2.zero;
                 break;
             case BossState.TAUNT:
 
