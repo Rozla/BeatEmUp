@@ -63,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool isHurt;
     [SerializeField] SpriteRenderer graphicsSR;
     public bool isDead;
-    bool isInvincible;
+    public bool isInvincible;
     Vector2 dirHurt;
     Vector2 collisionDirection;
     float timerHurt = 0f;
@@ -393,10 +393,10 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case PlayerState.HURT:
-                
+                rb2d.velocity = Vector2.zero;
                 break;
             case PlayerState.DEAD:
-
+                rb2d.velocity = Vector2.zero;
                 break;
             case PlayerState.SPECIALATTACK:
                 break;

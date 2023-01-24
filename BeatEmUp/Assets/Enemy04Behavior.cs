@@ -13,9 +13,12 @@ public class Enemy04Behavior : MonoBehaviour
     [SerializeField] GameObject enemyGraphics;
     [SerializeField] Transform playerTransform;
     [SerializeField] SpriteRenderer enemySR;
+    CapsuleCollider2D cc2d;
 
     float playerDist = 1f;
     float currentDist;
+
+    bool isDying;
 
     int attackCount = 0;
 
@@ -30,7 +33,9 @@ public class Enemy04Behavior : MonoBehaviour
     public bool isDead;
     public bool isHurt;
 
-    bool canDetect = true;
+    bool canDetect;
+
+    Coroutine attackCor;
 
     public enum EnemyState
     {
@@ -46,11 +51,17 @@ public class Enemy04Behavior : MonoBehaviour
     {
         currentState = EnemyState.IDLE;
         rb2d = GetComponent<Rigidbody2D>();
+        cc2d = GetComponent<CapsuleCollider2D>();
+        attackCor = StartCoroutine(Attack());
+        canDetect = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        Debug.Log(canDetect);
+
 
         if (dirEnemy != Vector2.zero)
         {
@@ -88,13 +99,14 @@ public class Enemy04Behavior : MonoBehaviour
     IEnumerator Attack()
     {
         canDetect = false;
+        isAttacking = false;
         yield return new WaitForSeconds(.75f);
         enemyAnimator.SetTrigger("ATTACK");
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(2f);
 
         Collider2D collision = Physics2D.OverlapCircle(transform.position, 1f, overlapLayerMask);
 
-        if(collision.gameObject != null)
+        if(collision.gameObject != null && collision.gameObject.GetComponent<PlayerMovement>().isInvincible == false)
         {
             collision.gameObject.GetComponent<PlayerHealth>().TakeDamage();
 
@@ -111,7 +123,7 @@ public class Enemy04Behavior : MonoBehaviour
         }
 
         Debug.Log("Coup de poing");
-        isAttacking = false;
+        
         canDetect = true;
         TransitionToState(EnemyState.IDLE);
 
@@ -119,6 +131,7 @@ public class Enemy04Behavior : MonoBehaviour
 
     IEnumerator IsHurt()
     {
+        StopCoroutine(attackCor);
         rb2d.velocity = Vector3.zero;
         isHurt = false;
         TransitionToState(EnemyState.HURT);
@@ -131,8 +144,11 @@ public class Enemy04Behavior : MonoBehaviour
 
     IEnumerator IsDead()
     {
+        StopCoroutine(attackCor);
+        isDying = true;
         rb2d.velocity = Vector2.zero;
         isDead = false;
+        canDetect = false;
         TransitionToState(EnemyState.DEAD);
         yield return new WaitForSeconds(.2f);
         enemySR.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 0);
@@ -198,12 +214,12 @@ public class Enemy04Behavior : MonoBehaviour
         {
             case EnemyState.IDLE:
 
-                if (playerDetected && !playerOnRange && !isAttacking && !isHurt && !isDead)
+                if (playerDetected && !playerOnRange && !isAttacking && !isHurt && !isDead &&!isDying)
                 {
                     TransitionToState(EnemyState.WALK);
                 }
 
-                if (playerDetected && playerOnRange)
+                if (playerDetected && playerOnRange && !isDying)
                 {
                     TransitionToState(EnemyState.ATTACK);
                 }
@@ -218,7 +234,7 @@ public class Enemy04Behavior : MonoBehaviour
                     TransitionToState(EnemyState.IDLE);
                 }
 
-                if (isAttacking)
+                if (isAttacking && !isDying)
                 {
                     TransitionToState(EnemyState.ATTACK);
                 }
@@ -233,6 +249,8 @@ public class Enemy04Behavior : MonoBehaviour
                 break;
             case EnemyState.DEAD:
                 rb2d.velocity = Vector2.zero;
+                cc2d.isTrigger = true;
+                
                 break;
             default:
                 break;
